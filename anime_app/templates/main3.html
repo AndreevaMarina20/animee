@@ -1,0 +1,37 @@
+{% extends 'header.html' %}
+<main>
+    {% block main %}
+        <div class="login-container">
+            <div class="login-header">
+                <h1 class="login-title">Войти</h1>
+                <p class="register-link">
+                    Нет аккаунта? <a href="регистрация">Регистрация</a>
+                </p>
+            </div>
+
+            <form class="login-form">
+                <div class="form-group">
+                    <label class="form-label">Логин (e-mail):</label>
+                    <input type="email" class="form-input" placeholder="Ваш e-mail" required>
+                    <div class="checkbox-group">
+                        <input type="checkbox" class="checkbox" id="remember-email">
+                        <label for="remember-email" class="checkbox-label">Запомнить e-mail</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Пароль:</label>
+                    <input type="password" class="form-input" placeholder="Ваш пароль" required>
+                    <div class="checkbox-group">
+                        <input type="checkbox" class="checkbox" id="show-password" checked>
+                        <label for="show-password" class="checkbox-label">Показать пароль</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    ВОЙТИ НА САЙТ
+                </button>
+            </form>
+        </div>
+        {% endblock %}    
+    </main>

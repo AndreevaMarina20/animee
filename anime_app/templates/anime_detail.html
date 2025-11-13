@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="anime-detail-container">
+    <a href="{% url 'home' %}" class="back-btn">← Назад</a>
+    
+    <div class="anime-detail-header">
+        <div class="anime-detail-poster">
+            {% if anime.poster %}
+                <img src="{{ anime.poster.url }}" alt="{{ anime.name }}">
+            {% else %}
+                <div class="poster-placeholder-large">Постер {{ anime.name }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="anime-detail-info">
+            <h1 class="anime-detail-title">{{ anime.name }}</h1>
+            <p class="anime-detail-original">{{ anime.old_name }}</p>
+            
+            <div class="anime-detail-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Жанры:</span>
+                    <span class="detail-value">
+                        {% for genre in anime.id_genres.all %}
+                            {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Длительность:</span>
+                    <span class="detail-value">{{ anime.episode_duration }} мин</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Эпизоды:</span>
+                    <span class="detail-value">{{ anime.quantity_of_episodes }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Статус:</span>
+                    <span class="detail-value">{{ anime.get_status_display }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Студии:</span>
+                    <span class="detail-value">
+                        {% for studio in anime.id_studios.all %}
+                            {{ studio.name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Рейтинг:</span>
+                    <span class="detail-value">★ {{ anime.rating }}</span>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="watch-btn-main">Смотреть онлайн</button>
+                <button class="favorite-btn">❤ Добавить в избранное</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="description-section">
+        <h2 class="section-title">Описание сюжета</h2>
+        <p class="description-text">{{ anime.description }}</p>
+    </div>
+
+    <div class="player-section">
+        <h2 class="section-title">Смотреть аниме "{{ anime.name }}" онлайн</h2>
+        
+        <div class="player-controls">
+            <select class="control-select">
+                <option>1 сезон</option>
+            </select>
+            <select class="control-select">
+                <option>1 серия</option>
+            </select>
+            <button class="next-btn">Дальше ></button>
+            <select class="control-select">
+                <option>Озвучка AniLibria</option>
+            </select>
+        </div>
+
+        <div class="video-player">
+            <video controls width="100%" height="400">
+                <source src="{% static 'videos/sample_episode.mp4' %}" type="video/mp4">
+                Ваш браузер не поддерживает видео тег.
+            </video>
+        </div>
+    </div>
+</div>
+{% endblock %}

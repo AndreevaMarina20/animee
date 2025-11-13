@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="main-container">
+    <h1 class="main-title">Смотреть аниме онлайн</h1>
+    
+    <div class="anime-list">
+        {% for anime in animes %}
+        <div class="anime-card">
+            <div class="anime-poster">
+                {% if anime.poster %}
+                    <img src="{{ anime.poster.url }}" alt="{{ anime.name }}">
+                {% else %}
+                    <div class="poster-placeholder">Постер {{ anime.name }}</div>
+                {% endif %}
+            </div>
+            <div class="anime-content">
+                <h2 class="anime-name">{{ anime.name }}</h2>
+                <p class="anime-original">{{ anime.old_name }}</p>
+                <p class="anime-description">{{ anime.description|truncatewords:30 }}</p>
+                <div class="anime-details">
+                    <span class="anime-status">{{ anime.get_status_display }}</span>
+                    <span class="anime-rating">★ {{ anime.rating }}</span>
+                    <span class="anime-episodes">{{ anime.quantity_of_episodes }} эп.</span>
+                </div>
+                <a href="{% url 'anime_detail' anime.id %}" class="watch-btn">Смотреть</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
