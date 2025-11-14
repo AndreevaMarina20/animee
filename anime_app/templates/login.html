@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="login-page-container">
+    <div class="login-container">
+        <div class="login-header">
+            <h1 class="login-title">Войти</h1>
+            <p class="register-link">
+                Нет аккаунта? <a href="{% url 'register' %}">Регистрация</a>
+            </p>
+        </div>
+
+        <form class="login-form" method="post">
+            {% csrf_token %}
+            
+            {% if error %}
+            <div class="error-message">{{ error }}</div>
+            {% endif %}
+            
+            <div class="form-group">
+                <label class="form-label">Логин (e-mail):</label>
+                <input type="email" class="form-input" placeholder="Ваш e-mail" name="email" required>
+                <div class="checkbox-group">
+                    <input type="checkbox" class="checkbox" id="remember-email" name="remember_me">
+                    <label for="remember-email" class="checkbox-label">Запомнить e-mail</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Пароль:</label>
+                <input type="password" class="form-input" placeholder="Ваш пароль" name="password" required>
+                <div class="checkbox-group">
+                    <input type="checkbox" class="checkbox" id="show-password">
+                    <label for="show-password" class="checkbox-label">Показать пароль</label>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                ВОЙТИ НА САЙТ
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
