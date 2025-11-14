@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="profile-page">
+    <div class="profile-card">
+        <div class="profile-avatar">
+            <div class="avatar-placeholder">
+                {{ user.username|first|upper }}
+            </div>
+        </div>
+        
+        <div class="profile-info">
+            <h1 class="profile-name">{{ user.username }}</h1>
+            <p class="profile-email">{{ user.email }}</p>
+            <div class="profile-stats">
+                <div class="stat">
+                    <span class="stat-number">0</span>
+                    <span class="stat-label">Просмотрено</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">0</span>
+                    <span class="stat-label">В избранном</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">0</span>
+                    <span class="stat-label">Комментариев</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-actions">
+        <button class="action-btn primary">Редактировать профиль</button>
+        <button class="action-btn secondary">Мои закладки</button>
+        <button class="action-btn secondary">История просмотров</button>
+    </div>
+
+    <div class="recent-activity">
+        <h2 class="section-title">Последняя активность</h2>
+        <div class="activity-list">
+            <div class="activity-item">
+                <div class="activity-icon">🎬</div>
+                <div class="activity-content">
+                    <p>Начал просмотр <strong>Звездное дитя</strong></p>
+                    <span class="activity-time">2 часа назад</span>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon">❤️</div>
+                <div class="activity-content">
+                    <p>Добавил в избранное <strong>Мой счастливый брак</strong></p>
+                    <span class="activity-time">1 день назад</span>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-icon">💬</div>
+                <div class="activity-content">
+                    <p>Оставил комментарий к <strong>Туалетный мальчик Ханако</strong></p>
+                    <span class="activity-time">3 дня назад</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

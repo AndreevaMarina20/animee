@@ -38,6 +38,12 @@ class Anime(models.Model):
         ("Релиз", "Релиз"),
         ("Выходит", "Выходит")
     ]
+
+    CATEG = [
+        ("Фильм", "Фильм"),
+        ("Сериал", "Сериал")
+    ]
+
     name = models.CharField(verbose_name='Название аниме', max_length=100)
     old_name = models.CharField("Название на оригинале", max_length=255)
     description = models.TextField("Описание")
@@ -48,6 +54,7 @@ class Anime(models.Model):
     id_studios = models.ManyToManyField(studios)
     rating = models.FloatField("Рейтинг", default=0.0)
     poster = models.ImageField("Постер", upload_to='anime_posters/', blank=True, null=True)
+    category = models.CharField("Категория", choices=CATEG,  default=CATEG[1])
     
     def __str__(self):
         return f"{self.name}"

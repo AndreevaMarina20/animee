@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 
 def home(request):
     latest_anime = Anime.objects.all()[:6]
@@ -31,59 +32,38 @@ def watch_episode(request, anime_id, episode_id):
 
 def login_view(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
+        username = request.POST.get('username')  # меняем на username
         password = request.POST.get('password')
         
-        # Ищем пользователя по email (используем filter вместо get)
-        users = User.objects.filter(email=email)
+        user = authenticate(request, username=username, password=password)
         
-        if users.exists():
-            # Проверяем пароль для каждого пользователя с таким email
-            user = None
-            for u in users:
-                if u.check_password(password):
-                    user = u
-                    break
-            
-            if user is not None:
-                login(request, user)
-                return redirect('home')
-            else:
-                return render(request, 'login.html', {'error': 'Неверный пароль'})
+        if user is not None:
+            login(request, user)
+            return redirect('home')
         else:
-            return render(request, 'login.html', {'error': 'Пользователь с таким email не найден'})
+            return render(request, 'login.html', {'error': 'Неверный логин или пароль'})
     
     return render(request, 'login.html')
 
 def register_view(request):
-    return render(request, 'register.html')
-
-def register_view(request):
     if request.method == 'POST':
-        # Получаем данные из формы
         username = request.POST.get('username')
         email = request.POST.get('email')
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
         
-        # Простая валидация
         if password1 == password2:
             try:
-                # Создаем пользователя
                 user = User.objects.create_user(
-                    username=username,
+                    username=username,  # используем username
                     email=email,
                     password=password1
                 )
-                # Автоматически логиним пользователя
                 login(request, user)
-                # Перенаправляем на главную
                 return redirect('home')
             except:
-                # Если пользователь уже существует
                 return render(request, 'register.html', {'error': 'Пользователь с таким логином уже существует'})
         else:
-            # Если пароли не совпадают
             return render(request, 'register.html', {'error': 'Пароли не совпадают'})
     
     return render(request, 'register.html')
@@ -91,3 +71,26 @@ def register_view(request):
 def logout_view(request):
     logout(request)
     return redirect('home')
+
+def categories(request):
+    category_type = request.GET.get('category', 'сериалы')  # по умолчанию сериалы
+    
+    if category_type == 'фильмы':
+        animes = Anime.objects.filter(category='Фильм')
+    else:
+        animes = Anime.objects.filter(category='Сериал')
+    
+    context = {
+        'animes': animes,
+        'current_category': category_type,
+    }
+    return render(request, 'categories.html', context)
+
+    
+@login_required
+def profile(request):
+    user = request.user
+    context = {
+        'user': user,
+    }
+    return render(request, 'profile.html', context)
