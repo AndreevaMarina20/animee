@@ -1,10 +1,13 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Anime
+from .models import *
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .forms import ReviewForm
+from django.utils import timezone
 
 def home(request):
     latest_anime = Anime.objects.all()[:6]
@@ -92,5 +95,45 @@ def profile(request):
     user = request.user
     context = {
         'user': user,
+    }
+    return render(request, 'profile.html', context)
+
+@login_required
+def profile(request):
+    user = request.user
+    success_message = None
+    
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            user_profile, created = Users.objects.get_or_create(
+                name=user.username,
+                defaults={
+                    'email': user.email,
+                    'description': 'Пользователь сайта',
+                    'last_login_time': timezone.now(),
+                    'account_creation_date': timezone.now().date()
+                }
+            )
+            review.id_user = user_profile
+            review.Release_date = timezone.now().date()
+            
+            review.estimation = int(form.cleaned_data['estimation'])
+            review.design_rating = int(form.cleaned_data['design_rating'])
+            review.usability_rating = int(form.cleaned_data['usability_rating'])
+            review.content_rating = int(form.cleaned_data['content_rating'])
+            review.performance_rating = int(form.cleaned_data['performance_rating'])
+            
+            review.save()
+            success_message = "Спасибо за ваш отзыв! Он был успешно отправлен."
+            form = ReviewForm()
+    else:
+        form = ReviewForm()
+    
+    context = {
+        'user': user,
+        'form': form,
+        'success_message': success_message,
     }
     return render(request, 'profile.html', context)

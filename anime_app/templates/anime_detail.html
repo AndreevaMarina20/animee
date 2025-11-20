@@ -3,6 +3,7 @@
 
 {% block content %}
 <div class="anime-detail-container">
+    <!-- Кнопка назад -->
     <a href="{% url 'home' %}" class="back-btn">← Назад</a>
     
     <div class="anime-detail-header">
@@ -29,7 +30,7 @@
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Длительность:</span>
-                    <span class="detail-value">{{ anime.episode_duration }} мин</span>
+                    <span class="detail-value">{{ anime.episode_duration }} мин.</span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Эпизоды:</span>
@@ -54,7 +55,7 @@
             </div>
 
             <div class="action-buttons">
-                <button class="watch-btn-main">Смотреть онлайн</button>
+                <a href="#video-player-section" class="watch-btn-main">Смотреть онлайн</a>
                 <button class="favorite-btn">❤ Добавить в избранное</button>
             </div>
         </div>
@@ -65,7 +66,7 @@
         <p class="description-text">{{ anime.description }}</p>
     </div>
 
-    <div class="player-section">
+    <div class="player-section" id="video-player-section">
         <h2 class="section-title">Смотреть аниме "{{ anime.name }}" онлайн</h2>
         
         <div class="player-controls">

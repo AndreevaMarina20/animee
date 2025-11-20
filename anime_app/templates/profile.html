@@ -32,35 +32,143 @@
 
     <div class="profile-actions">
         <button class="action-btn primary">Редактировать профиль</button>
-        <button class="action-btn secondary">Мои закладки</button>
-        <button class="action-btn secondary">История просмотров</button>
+        <button class="action-btn secondary">Настройки</button>
     </div>
 
-    <div class="recent-activity">
-        <h2 class="section-title">Последняя активность</h2>
-        <div class="activity-list">
-            <div class="activity-item">
-                <div class="activity-icon">🎬</div>
-                <div class="activity-content">
-                    <p>Начал просмотр <strong>Звездное дитя</strong></p>
-                    <span class="activity-time">2 часа назад</span>
+    <!-- Секция для оставления отзыва -->
+    <div class="review-section">
+        <h2 class="section-title">Оставить отзыв о сайте</h2>
+        
+        {% if success_message %}
+        <div class="success-message">
+            {{ success_message }}
+        </div>
+        {% endif %}
+        
+        <form class="review-form" method="post" id="reviewForm">
+            {% csrf_token %}
+            
+            <div class="rating-categories">
+                <div class="rating-category">
+                    <label class="rating-label">{{ form.design_rating.label }}:</label>
+                    <div class="heart-rating-wrapper">
+                        {% for choice in form.design_rating %}
+                        <div class="heart-checkbox">
+                            {{ choice.tag }}
+                            <label for="{{ choice.id_for_label }}" class="heart-label">
+                                <span class="heart-text">{% for i in choice.choice_label %}{% if forloop.counter <= choice.data.value|add:"0" %}❤{% else %}♡{% endif %}{% endfor %}</span>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="rating-category">
+                    <label class="rating-label">{{ form.usability_rating.label }}:</label>
+                    <div class="heart-rating-wrapper">
+                        {% for choice in form.usability_rating %}
+                        <div class="heart-checkbox">
+                            {{ choice.tag }}
+                            <label for="{{ choice.id_for_label }}" class="heart-label">
+                                <span class="heart-text">{% for i in choice.choice_label %}{% if forloop.counter <= choice.data.value|add:"0" %}❤{% else %}♡{% endif %}{% endfor %}</span>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="rating-category">
+                    <label class="rating-label">{{ form.content_rating.label }}:</label>
+                    <div class="heart-rating-wrapper">
+                        {% for choice in form.content_rating %}
+                        <div class="heart-checkbox">
+                            {{ choice.tag }}
+                            <label for="{{ choice.id_for_label }}" class="heart-label">
+                                <span class="heart-text">{% for i in choice.choice_label %}{% if forloop.counter <= choice.data.value|add:"0" %}❤{% else %}♡{% endif %}{% endfor %}</span>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="rating-category">
+                    <label class="rating-label">{{ form.performance_rating.label }}:</label>
+                    <div class="heart-rating-wrapper">
+                        {% for choice in form.performance_rating %}
+                        <div class="heart-checkbox">
+                            {{ choice.tag }}
+                            <label for="{{ choice.id_for_label }}" class="heart-label">
+                                <span class="heart-text">{% for i in choice.choice_label %}{% if forloop.counter <= choice.data.value|add:"0" %}❤{% else %}♡{% endif %}{% endfor %}</span>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="rating-category">
+                    <label class="rating-label">{{ form.estimation.label }}:</label>
+                    <div class="heart-rating-wrapper">
+                        {% for choice in form.estimation %}
+                        <div class="heart-checkbox">
+                            {{ choice.tag }}
+                            <label for="{{ choice.id_for_label }}" class="heart-label">
+                                <span class="heart-text">{% for i in choice.choice_label %}{% if forloop.counter <= choice.data.value|add:"0" %}❤{% else %}♡{% endif %}{% endfor %}</span>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
-            <div class="activity-item">
-                <div class="activity-icon">❤️</div>
-                <div class="activity-content">
-                    <p>Добавил в избранное <strong>Мой счастливый брак</strong></p>
-                    <span class="activity-time">1 день назад</span>
-                </div>
+            
+            <div class="form-group">
+                <label class="form-label">{{ form.text.label }}:</label>
+                {{ form.text }}
             </div>
-            <div class="activity-item">
-                <div class="activity-icon">💬</div>
-                <div class="activity-content">
-                    <p>Оставил комментарий к <strong>Туалетный мальчик Ханако</strong></p>
-                    <span class="activity-time">3 дня назад</span>
-                </div>
-            </div>
+            
+            <button type="submit" class="submit-btn">
+                Отправить отзыв
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Всплывающее окно -->
+{% if success_message %}
+<div class="modal-overlay" id="successModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Успешно!</h3>
+            <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <p>{{ success_message }}</p>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-btn" onclick="closeModal()">Закрыть</button>
         </div>
     </div>
 </div>
+{% endif %}
+
+<!-- Минимальный JS для модального окна -->
+<script>
+function closeModal() {
+    const modal = document.getElementById('successModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+// Закрытие по клику вне окна
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('successModal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

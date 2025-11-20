@@ -3,8 +3,7 @@
     <nav>
         <ul>
             <li><a href="{% url 'home' %}">Главная</a></li>
-            <li><a href="{% url 'categories' %}">Категории</a></li>  <!-- ← вместо Каталог -->
-            <li><a href="#">Закладки</a></li>
+            <li><a href="{% url 'categories' %}">Категории</a></li>
             {% if user.is_authenticated %}
                 <li><a href="{% url 'profile' %}">{{ user.username }}...</a></li>
             {% endif %}

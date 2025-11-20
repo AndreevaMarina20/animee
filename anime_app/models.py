@@ -123,24 +123,6 @@ class viewing_history(models.Model):
             models.Index(fields=["id_user"])
         ]
 
-class reviews(models.Model):
-    id_user = models.ForeignKey(Users, on_delete=models.CASCADE)
-    id_anime = models.ManyToManyField(Anime)
-    estimation = models.IntegerField('Оценка')
-    text = models.TextField("Текст отзыва")
-    Release_date = models.DateField("Время создания")
-
-    def __str__(self):
-        return f"{self.id_user}"
-    
-    class Meta:
-        verbose_name = "Отзывы"
-        verbose_name_plural = "Отзывы"
-        ordering = ["id_user"]
-        indexes = [
-            models.Index(fields=["id_user"])
-        ]
-
 class Episode(models.Model):
     anime = models.ForeignKey(Anime, on_delete=models.CASCADE, verbose_name="Аниме")
     season = models.IntegerField("Сезон", default=1)
@@ -155,3 +137,27 @@ class Episode(models.Model):
     
     def __str__(self):
         return f"{self.anime.name} - Сезон {self.season} Серия {self.episode_number}"
+    
+class reviews(models.Model):
+    id_user = models.ForeignKey(Users, on_delete=models.CASCADE)
+    id_anime = models.ManyToManyField(Anime)
+    estimation = models.IntegerField('Оценка')
+    text = models.TextField("Текст отзыва")
+    Release_date = models.DateField("Время создания")
+    
+    # Добавляем оценки по разным аспектам
+    design_rating = models.IntegerField('Оценка дизайна', default=0)
+    usability_rating = models.IntegerField('Оценка удобства', default=0)
+    content_rating = models.IntegerField('Оценка контента', default=0)
+    performance_rating = models.IntegerField('Оценка производительности', default=0)
+
+    def __str__(self):
+        return f"{self.id_user}"
+    
+    class Meta:
+        verbose_name = "Отзывы"
+        verbose_name_plural = "Отзывы"
+        ordering = ["id_user"]
+        indexes = [
+            models.Index(fields=["id_user"])
+        ]

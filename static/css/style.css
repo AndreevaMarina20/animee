@@ -154,7 +154,7 @@ nav a:hover {
 }
 
 .anime-name {
-    font-family: 'Inter', sans-serif; /* Заменили на Inter */
+    font-family: 'Inter', sans-serif;
     font-size: 24px;
     color: #f5f5f5;
     margin-bottom: 5px;
@@ -295,7 +295,7 @@ nav a:hover {
 }
 
 .anime-detail-title {
-    font-family: 'Inter', sans-serif; /* Заменили на Inter */
+    font-family: 'Inter', sans-serif; 
     font-size: 36px;
     color: #f5f5f5;
     margin-bottom: 10px;
@@ -325,7 +325,7 @@ nav a:hover {
 }
 
 .detail-label {
-    font-family: 'Inter', sans-serif; /* Заменили на Inter */
+    font-family: 'Inter', sans-serif;
     font-size: 16px;
     color: #9d7aff;
     font-weight: 600;
@@ -344,7 +344,7 @@ nav a:hover {
 }
 
 .watch-btn-main {
-    background-color: #9d7aff;
+    background-color: #7c4dff;
     color: white;
     border: none;
     padding: 12px 25px;
@@ -354,10 +354,12 @@ nav a:hover {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    text-decoration: none; 
+    display: inline-block; 
 }
 
 .watch-btn-main:hover {
-    background-color: #9d7aff;
+    background-color: #6a3fe0;
 }
 
 .favorite-btn {
@@ -973,4 +975,210 @@ nav a:hover {
     font-family: 'Inter', sans-serif;
     font-size: 12px;
     color: #b3b3b3;
+}
+
+/* Стили для секции отзывов */
+.review-section {
+    background: #1a1a1a;
+    border-radius: 16px;
+    padding: 30px;
+    border: 1px solid #2a2a2a;
+    margin: 30px 0;
+}
+
+.review-form {
+    margin-top: 20px;
+}
+
+.rating-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.rating-category {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 15px 0;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.rating-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #f5f5f5;
+    font-weight: 500;
+    min-width: 200px;
+    margin-top: 5px;
+}
+
+.heart-rating-wrapper {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.heart-checkbox {
+    position: relative;
+    display: inline-block;
+}
+
+.heart-checkbox input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.heart-label {
+    display: inline-block;
+    padding: 8px 12px;
+    border: 2px solid #2a2a2a;
+    border-radius: 8px;
+    background: #000000;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 18px;
+    min-width: 60px;
+    text-align: center;
+}
+
+.heart-label:hover {
+    border-color: #9d7aff;
+    background: #1a1a1a;
+}
+
+.heart-checkbox input[type="radio"]:checked + .heart-label {
+    border-color: #ff4757;
+    background: #2a1a1a;
+    color: #ff4757;
+}
+
+.heart-text {
+    font-size: 16px;
+    letter-spacing: 2px;
+}
+
+.review-textarea {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    background-color: #000000;
+    color: #f5f5f5;
+    resize: vertical;
+    min-height: 100px;
+}
+
+.review-textarea:focus {
+    outline: none;
+    border-color: #9d7aff;
+    box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.2);
+}
+
+/* Стили для модального окна */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: #1a1a1a;
+    border-radius: 12px;
+    padding: 0;
+    width: 90%;
+    max-width: 400px;
+    border: 1px solid #2a2a2a;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.modal-header h3 {
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    color: #f5f5f5;
+    margin: 0;
+    font-weight: 600;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: #f5f5f5;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.3s ease;
+}
+
+.modal-close:hover {
+    background: #2a2a2a;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-body p {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    color: #f5f5f5;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.modal-footer {
+    padding: 20px;
+    border-top: 1px solid #2a2a2a;
+    text-align: right;
+}
+
+.modal-btn {
+    background: #7c4dff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.modal-btn:hover {
+    background: #6a3fe0;
+}
+
+.form-label {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    color: #f5f5f5;
+    margin-bottom: 10px;
+    font-weight: 500;
 }
