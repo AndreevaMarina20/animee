@@ -25,8 +25,6 @@ header {
     margin-bottom: 40px;
     background-color: #0a0a0a;
     width: 100%;
-    max-width: none;
-    border-radius: 0;
 }
 
 .logo {
@@ -34,25 +32,24 @@ header {
     font-weight: bold;
     color: #f5f5f5;
     margin-right: auto;
-    font-family: 'Merienda One', cursive; /* Возвращаем обратно */
+    font-family: 'Merienda One', cursive;
 }
 
 nav ul {
     display: flex;
     list-style: none;
     gap: 40px;
-    font-family: 'Inter', sans-serif;
 }
 
 nav a {
     text-decoration: none;
     color: #f5f5f5;
     padding: 5px 10px;
-    transition: color 0.3s ease;
     font-weight: 500;
     font-style: italic;
+    transition: color 0.2s ease;
 }
-        
+
 nav a:hover {
     color: #9d7aff;
 }
@@ -62,29 +59,27 @@ nav a:hover {
     color: #f5f5f5;
     border: none;
     padding: 10px 24px;
-    cursor: pointer;
     border-radius: 20px;
     margin-left: auto;
-    transition: all 0.3s ease;
     font-family: 'Inter', sans-serif;
     font-weight: 500;
     text-decoration: none;
     display: inline-block;
-}
-        
-.login-btn:hover {
-    background-color: #9d7aff;
-    transform: translateY(-1px);
+    transition: background-color 0.2s ease;
 }
 
-/* Стили для главной страницы */
-.main-container {
+.login-btn:hover {
+    background-color: #9d7aff;
+}
+
+/* Контейнеры */
+.main-container, .categories-container, .anime-detail-container, .profile-page {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
 
-.main-title {
+.main-title, .categories-title {
     font-family: 'Inter', sans-serif;
     font-size: 36px;
     color: #f5f5f5;
@@ -93,6 +88,7 @@ nav a:hover {
     font-weight: 600;
 }
 
+/* Карточки аниме */
 .anime-list {
     display: flex;
     flex-direction: column;
@@ -108,12 +104,11 @@ nav a:hover {
     gap: 25px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     align-items: flex-start;
-    transition: all 0.3s ease;
+    transition: transform 0.2s ease;
 }
 
 .anime-card:hover {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    border-color: #2a2a2a;
+    transform: translateY(-2px);
 }
 
 .anime-poster {
@@ -125,7 +120,7 @@ nav a:hover {
     border: 1px solid #333333;
 }
 
-.anime-poster img {
+.anime-poster img, .anime-detail-poster img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -154,7 +149,6 @@ nav a:hover {
 }
 
 .anime-name {
-    font-family: 'Inter', sans-serif;
     font-size: 24px;
     color: #f5f5f5;
     margin-bottom: 5px;
@@ -162,7 +156,6 @@ nav a:hover {
 }
 
 .anime-original {
-    font-family: 'Inter', sans-serif;
     font-size: 16px;
     color: #9d7aff;
     margin-bottom: 15px;
@@ -171,7 +164,6 @@ nav a:hover {
 }
 
 .anime-description {
-    font-family: 'Inter', sans-serif;
     font-size: 14px;
     color: #cccccc;
     line-height: 1.6;
@@ -186,7 +178,7 @@ nav a:hover {
     flex-wrap: wrap;
 }
 
-.anime-status, .anime-rating, .anime-episodes {
+.anime-status, .anime-rating, .anime-episodes, .anime-category {
     background-color: #000000;
     padding: 5px 12px;
     border-radius: 20px;
@@ -194,20 +186,10 @@ nav a:hover {
     font-weight: 600;
 }
 
-.anime-status {
-    color: #9d7aff;
-    border: 1px solid #9d7aff;
-}
-
-.anime-rating {
-    color: #FFD700;
-    border: 1px solid #FFD700;
-}
-
-.anime-episodes {
-    color: #00FF00;
-    border: 1px solid #00FF00;
-}
+.anime-status { color: #9d7aff; border: 1px solid #9d7aff; }
+.anime-rating { color: #FFD700; border: 1px solid #FFD700; }
+.anime-episodes { color: #00FF00; border: 1px solid #00FF00; }
+.anime-category { color: #7c4dff; border: 1px solid #7c4dff; }
 
 .watch-btn {
     background-color: #000000;
@@ -215,43 +197,33 @@ nav a:hover {
     border: 1px solid #2a2a2a;
     padding: 10px 20px;
     border-radius: 12px;
-    font-family: 'Inter', sans-serif;
     font-weight: 600;
     text-decoration: none;
     text-align: center;
-    transition: all 0.3s ease;
     align-self: flex-start;
     display: inline-block;
+    transition: border-color 0.2s ease;
 }
 
 .watch-btn:hover {
-    background-color: #000000; /* Фон не меняется */
-    border-color: #9d7aff; /* Появляется фиолетовая граница */
+    border-color: #9d7aff;
 }
 
-/* Стили для страницы аниме */
-.anime-detail-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
+/* Детали аниме */
 .back-btn {
     display: inline-block;
     color: #f5f5f5;
     text-decoration: none;
-    font-family: 'Inter', sans-serif;
     font-size: 16px;
     margin-bottom: 20px;
     padding: 8px 16px;
     border: 1px solid #2a2a2a;
     border-radius: 8px;
-    transition: all 0.3s ease;
+    transition: background-color 0.2s ease;
 }
 
 .back-btn:hover {
     background-color: #2a2a2a;
-    color: #f5f5f5;
 }
 
 .anime-detail-header {
@@ -270,32 +242,11 @@ nav a:hover {
     border: 1px solid #2a2a2a;
 }
 
-.anime-detail-poster img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 10px;
-}
-
-.poster-placeholder-large {
-    width: 100%;
-    height: 100%;
-    background-color: #000000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #666666;
-    font-size: 16px;
-    text-align: center;
-    border-radius: 10px;
-}
-
 .anime-detail-info {
     flex: 1;
 }
 
 .anime-detail-title {
-    font-family: 'Inter', sans-serif; 
     font-size: 36px;
     color: #f5f5f5;
     margin-bottom: 10px;
@@ -303,7 +254,6 @@ nav a:hover {
 }
 
 .anime-detail-original {
-    font-family: 'Inter', sans-serif;
     font-size: 18px;
     color: #9d7aff;
     margin-bottom: 30px;
@@ -325,14 +275,12 @@ nav a:hover {
 }
 
 .detail-label {
-    font-family: 'Inter', sans-serif;
     font-size: 16px;
     color: #9d7aff;
     font-weight: 600;
 }
 
 .detail-value {
-    font-family: 'Inter', sans-serif;
     font-size: 14px;
     color: #cccccc;
 }
@@ -349,13 +297,11 @@ nav a:hover {
     border: none;
     padding: 12px 25px;
     border-radius: 8px;
-    font-family: 'Inter', sans-serif;
     font-size: 16px;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none; 
-    display: inline-block; 
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.2s ease;
 }
 
 .watch-btn-main:hover {
@@ -368,24 +314,16 @@ nav a:hover {
     border: 2px solid #2a2a2a;
     padding: 12px 25px;
     border-radius: 8px;
-    font-family: 'Inter', sans-serif;
     font-size: 16px;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.2s ease;
 }
 
 .favorite-btn:hover {
     background-color: #2a2a2a;
-    color: #f5f5f5;
-}
-
-.description-section {
-    margin: 40px 0;
 }
 
 .section-title {
-    font-family: 'Inter', sans-serif;
     font-size: 24px;
     color: #f5f5f5;
     margin-bottom: 20px;
@@ -393,60 +331,13 @@ nav a:hover {
 }
 
 .description-text {
-    font-family: 'Inter', sans-serif;
     font-size: 16px;
     color: #cccccc;
     line-height: 1.6;
 }
 
-.player-section {
-    margin: 40px 0;
-}
-
-.player-controls {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
-
-.control-select {
-    background-color: #000000;
-    color: #f5f5f5;
-    border: 2px solid #2a2a2a;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-}
-
-.next-btn {
-    background-color: #9d7aff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.next-btn:hover {
-    background-color: #9d7aff;
-}
-
-.video-player {
-    background-color: #000000;
-    border: 2px solid #2a2a2a;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-/* Стили для страницы входа и регистрации */
-.login-page-container,
-.registration-page-container {
+/* Формы */
+.login-page-container, .registration-page-container {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -454,8 +345,7 @@ nav a:hover {
     padding: 20px;
 }
 
-.login-container,
-.registration-container {
+.login-container, .registration-container {
     background-color: #1a1a1a;
     border-radius: 16px;
     padding: 50px;
@@ -465,37 +355,27 @@ nav a:hover {
     border: 1px solid #2a2a2a;
 }
 
-.login-header,
-.registration-header {
+.login-header, .registration-header {
     text-align: center;
     margin-bottom: 40px;
 }
 
-.login-title,
-.registration-title {
-    font-family: 'Inter', sans-serif;
+.login-title, .registration-title {
     font-size: 32px;
     color: #f5f5f5;
     margin-bottom: 15px;
     font-weight: 600;
 }
 
-.register-link,
-.login-link {
+.register-link, .login-link {
     color: #b3b3b3;
     font-size: 16px;
 }
 
-.register-link a,
-.login-link a {
+.register-link a, .login-link a {
     color: #9d7aff;
     text-decoration: none;
     font-weight: 600;
-}
-
-.register-link a:hover,
-.login-link a:hover {
-    text-decoration: underline;
 }
 
 .form-group {
@@ -504,7 +384,6 @@ nav a:hover {
 
 .form-label {
     display: block;
-    font-family: 'Inter', sans-serif;
     font-size: 16px;
     color: #f5f5f5;
     margin-bottom: 10px;
@@ -516,41 +395,20 @@ nav a:hover {
     padding: 14px 18px;
     border: 1px solid #2a2a2a;
     border-radius: 8px;
-    font-family: 'Inter', sans-serif;
     font-size: 16px;
-    transition: all 0.3s ease;
     background-color: #000000;
     color: #f5f5f5;
     box-sizing: border-box;
+    transition: border-color 0.2s ease;
+}
+
+.form-input:focus {
+    border-color: #9d7aff;
+    outline: none;
 }
 
 .form-input::placeholder {
     color: #666666;
-}
-
-.form-input:focus {
-    outline: none;
-    border-color: #9d7aff;
-    background-color: #000000;
-    box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.2);
-}
-
-.checkbox-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.checkbox {
-    width: 18px;
-    height: 18px;
-    accent-color: #9d7aff;
-}
-
-.checkbox-label {
-    font-size: 14px;
-    color: #b3b3b3;
 }
 
 .submit-btn {
@@ -560,78 +418,17 @@ nav a:hover {
     border: none;
     padding: 16px;
     border-radius: 8px;
-    font-family: 'Inter', sans-serif;
     font-size: 16px;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
     margin-top: 10px;
+    transition: background-color 0.2s ease;
 }
 
 .submit-btn:hover {
-    background-color: #9d7aff;
+    background-color: #8b6bff;
 }
 
-.captcha-group {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-top: 10px;
-}
-
-.captcha-input {
-    flex: 1;
-}
-
-.captcha-image {
-    width: 120px;
-    height: 50px;
-    border: 1px solid #2a2a2a;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-
-.captcha-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.error-message {
-    background-color: #d32f2f;
-    color: white;
-    padding: 12px;
-    border-radius: 6px;
-    margin-bottom: 20px;
-    text-align: center;
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-}
-
-/* Стили для страницы категорий */
-.categories-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.categories-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.categories-title {
-    font-family: 'Inter', sans-serif;
-    font-size: 36px;
-    color: #f5f5f5;
-    margin-bottom: 30px;
-    font-weight: 600;
-}
-
+/* Категории */
 .category-buttons {
     display: flex;
     justify-content: center;
@@ -646,9 +443,8 @@ nav a:hover {
     padding: 12px 30px;
     border-radius: 8px;
     text-decoration: none;
-    font-family: 'Inter', sans-serif;
     font-weight: 600;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
 
 .category-btn:hover {
@@ -665,155 +461,10 @@ nav a:hover {
     text-align: center;
     padding: 50px;
     color: #b3b3b3;
-    font-family: 'Inter', sans-serif;
     font-size: 18px;
 }
 
-.anime-category {
-    background-color: #000000;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    color: #7c4dff;
-    border: 1px solid #7c4dff;
-}
-
-/* Стили для страницы профиля */
-.profile-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.profile-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.profile-title {
-    font-family: 'Inter', sans-serif;
-    font-size: 36px;
-    color: #f5f5f5;
-    margin-bottom: 10px;
-    font-weight: 600;
-}
-
-.username {
-    font-family: 'Inter', sans-serif;
-    font-size: 28px;
-    color: #9d7aff;
-    margin-bottom: 30px;
-    font-weight: 500;
-}
-
-.profile-sections {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-}
-
-.profile-section {
-    background-color: #1a1a1a;
-    border-radius: 12px;
-    padding: 25px;
-    border: 1px solid #2a2a2a;
-}
-
-.combined-section {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 30px;
-    align-items: start;
-}
-
-.section-title {
-    font-family: 'Inter', sans-serif;
-    font-size: 22px;
-    color: #f5f5f5;
-    margin-bottom: 20px;
-    border-bottom: 2px solid #7c4dff;
-    padding-bottom: 10px;
-    font-weight: 600;
-}
-
-.stats-list {
-    list-style: none;
-}
-
-.stat-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid #2a2a2a;
-}
-
-.stat-label {
-    color: #cccccc;
-    font-size: 16px;
-}
-
-.stat-value {
-    color: #f5f5f5;
-    font-weight: 600;
-    font-size: 16px;
-}
-
-.edit-btn {
-    background-color: #7c4dff;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 8px;
-    font-family: 'Inter', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: auto;
-    display: inline-block;
-}
-
-.edit-btn:hover {
-    background-color: #6a3fe0;
-}
-
-.registration-info {
-    color: #cccccc;
-    font-size: 14px;
-    margin-bottom: 15px;
-}
-
-.last-active {
-    color: #00ff00;
-    font-weight: 600;
-}
-
-.about-text {
-    color: #cccccc;
-    font-size: 16px;
-    line-height: 1.6;
-    margin-bottom: 20px;
-}
-
-.moderation-notice {
-    background-color: #1a1a1a;
-    border: 1px solid #7c4dff;
-    border-radius: 10px;
-    padding: 20px;
-    color: #cccccc;
-    font-size: 14px;
-    text-align: center;
-}
-
-/* Новые стили для профиля */
-.profile-page {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
+/* Профиль */
 .profile-card {
     background: #1a1a1a;
     border-radius: 16px;
@@ -840,7 +491,6 @@ nav a:hover {
     color: white;
     font-size: 36px;
     font-weight: bold;
-    font-family: 'Inter', sans-serif;
 }
 
 .profile-info {
@@ -848,7 +498,6 @@ nav a:hover {
 }
 
 .profile-name {
-    font-family: 'Inter', sans-serif;
     font-size: 32px;
     color: #f5f5f5;
     margin-bottom: 8px;
@@ -856,7 +505,6 @@ nav a:hover {
 }
 
 .profile-email {
-    font-family: 'Inter', sans-serif;
     font-size: 16px;
     color: #9d7aff;
     margin-bottom: 25px;
@@ -873,7 +521,6 @@ nav a:hover {
 
 .stat-number {
     display: block;
-    font-family: 'Inter', sans-serif;
     font-size: 24px;
     color: #f5f5f5;
     font-weight: 600;
@@ -881,7 +528,6 @@ nav a:hover {
 }
 
 .stat-label {
-    font-family: 'Inter', sans-serif;
     font-size: 14px;
     color: #b3b3b3;
 }
@@ -896,12 +542,10 @@ nav a:hover {
 .action-btn {
     padding: 12px 24px;
     border-radius: 8px;
-    font-family: 'Inter', sans-serif;
     font-size: 14px;
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
     border: none;
+    transition: all 0.2s ease;
 }
 
 .action-btn.primary {
@@ -924,70 +568,13 @@ nav a:hover {
     border-color: #7c4dff;
 }
 
-.recent-activity {
-    background: #1a1a1a;
-    border-radius: 16px;
-    padding: 30px;
-    border: 1px solid #2a2a2a;
-}
-
-.section-title {
-    font-family: 'Inter', sans-serif;
-    font-size: 20px;
-    color: #f5f5f5;
-    margin-bottom: 20px;
-    font-weight: 600;
-}
-
-.activity-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.activity-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px;
-    background: #000000;
-    border-radius: 8px;
-    border: 1px solid #2a2a2a;
-}
-
-.activity-icon {
-    font-size: 20px;
-    flex-shrink: 0;
-}
-
-.activity-content {
-    flex: 1;
-}
-
-.activity-content p {
-    font-family: 'Inter', sans-serif;
-    font-size: 14px;
-    color: #f5f5f5;
-    margin-bottom: 4px;
-}
-
-.activity-time {
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    color: #b3b3b3;
-}
-
-/* Стили для секции отзывов */
+/* Отзывы */
 .review-section {
     background: #1a1a1a;
     border-radius: 16px;
     padding: 30px;
     border: 1px solid #2a2a2a;
     margin: 30px 0;
-}
-
-.review-form {
-    margin-top: 20px;
 }
 
 .rating-categories {
@@ -1006,7 +593,6 @@ nav a:hover {
 }
 
 .rating-label {
-    font-family: 'Inter', sans-serif;
     font-size: 14px;
     color: #f5f5f5;
     font-weight: 500;
@@ -1018,11 +604,6 @@ nav a:hover {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-}
-
-.heart-checkbox {
-    position: relative;
-    display: inline-block;
 }
 
 .heart-checkbox input[type="radio"] {
@@ -1038,11 +619,11 @@ nav a:hover {
     border: 2px solid #2a2a2a;
     border-radius: 8px;
     background: #000000;
-    cursor: pointer;
-    transition: all 0.3s ease;
     font-size: 18px;
     min-width: 60px;
     text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
 }
 
 .heart-label:hover {
@@ -1066,119 +647,33 @@ nav a:hover {
     padding: 14px 18px;
     border: 1px solid #2a2a2a;
     border-radius: 8px;
-    font-family: 'Inter', sans-serif;
     font-size: 16px;
     background-color: #000000;
     color: #f5f5f5;
     resize: vertical;
     min-height: 100px;
+    transition: border-color 0.2s ease;
 }
 
 .review-textarea:focus {
-    outline: none;
     border-color: #9d7aff;
-    box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.2);
+    outline: none;
 }
 
-/* Стили для модального окна */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background: #1a1a1a;
-    border-radius: 12px;
-    padding: 0;
-    width: 90%;
-    max-width: 400px;
-    border: 1px solid #2a2a2a;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    border-bottom: 1px solid #2a2a2a;
-}
-
-.modal-header h3 {
-    font-family: 'Inter', sans-serif;
-    font-size: 20px;
-    color: #f5f5f5;
-    margin: 0;
-    font-weight: 600;
-}
-
-.modal-close {
-    background: none;
-    border: none;
-    color: #f5f5f5;
-    font-size: 24px;
-    cursor: pointer;
-    padding: 0;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: background 0.3s ease;
-}
-
-.modal-close:hover {
-    background: #2a2a2a;
-}
-
-.modal-body {
-    padding: 20px;
-}
-
-.modal-body p {
-    font-family: 'Inter', sans-serif;
-    font-size: 16px;
-    color: #f5f5f5;
-    margin: 0;
-    line-height: 1.5;
-}
-
-.modal-footer {
-    padding: 20px;
-    border-top: 1px solid #2a2a2a;
-    text-align: right;
-}
-
-.modal-btn {
-    background: #7c4dff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
+.error-message, .success-message {
+    padding: 12px;
     border-radius: 6px;
-    font-family: 'Inter', sans-serif;
+    margin-bottom: 20px;
+    text-align: center;
     font-size: 14px;
-    cursor: pointer;
-    transition: background 0.3s ease;
 }
 
-.modal-btn:hover {
-    background: #6a3fe0;
+.error-message {
+    background-color: #d32f2f;
+    color: white;
 }
 
-.form-label {
-    display: block;
-    font-family: 'Inter', sans-serif;
-    font-size: 16px;
-    color: #f5f5f5;
-    margin-bottom: 10px;
-    font-weight: 500;
+.success-message {
+    background-color: #4caf50;
+    color: white;
 }
