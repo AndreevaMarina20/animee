@@ -131,44 +131,4 @@
         </form>
     </div>
 </div>
-
-<!-- Всплывающее окно -->
-{% if success_message %}
-<div class="modal-overlay" id="successModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>Успешно!</h3>
-            <button class="modal-close" onclick="closeModal()">×</button>
-        </div>
-        <div class="modal-body">
-            <p>{{ success_message }}</p>
-        </div>
-        <div class="modal-footer">
-            <button class="modal-btn" onclick="closeModal()">Закрыть</button>
-        </div>
-    </div>
-</div>
-{% endif %}
-
-<!-- Минимальный JS для модального окна -->
-<script>
-function closeModal() {
-    const modal = document.getElementById('successModal');
-    if (modal) {
-        modal.style.display = 'none';
-    }
-}
-
-// Закрытие по клику вне окна
-document.addEventListener('DOMContentLoaded', function() {
-    const modal = document.getElementById('successModal');
-    if (modal) {
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
-    }
-});
-</script>
 {% endblock %}
