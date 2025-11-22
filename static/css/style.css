@@ -104,11 +104,6 @@ nav a:hover {
     gap: 25px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     align-items: flex-start;
-    transition: transform 0.2s ease;
-}
-
-.anime-card:hover {
-    transform: translateY(-2px);
 }
 
 .anime-poster {
