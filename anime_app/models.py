@@ -2,8 +2,8 @@ from django.db import models
 
 
 class studios(models.Model):
-    name = models.CharField('Название студии')
-    adress = models.CharField('Адрес студии', default="")
+    name = models.CharField('Название студии', max_length=200)
+    adress = models.CharField('Адрес студии', max_length=200, default="")
 
     def __str__(self):
          return f"{self.name}"
@@ -47,14 +47,14 @@ class Anime(models.Model):
     name = models.CharField(verbose_name='Название аниме', max_length=100)
     old_name = models.CharField("Название на оригинале", max_length=255)
     description = models.TextField("Описание")
-    status = models.CharField("Статус", choices=STAT, default=STAT[2])
+    status = models.CharField("Статус", choices=STAT, default=STAT[2], max_length=20)
     episode_duration = models.IntegerField("Длительность эпизода (в минутах)")
     quantity_of_episodes = models.IntegerField("Количество эпизодов")
     id_genres = models.ManyToManyField(genres)
     id_studios = models.ManyToManyField(studios)
     rating = models.FloatField("Рейтинг", default=0.0)
     poster = models.ImageField("Постер", upload_to='anime_posters/', blank=True, null=True)
-    category = models.CharField("Категория", choices=CATEG,  default=CATEG[1])
+    category = models.CharField("Категория", choices=CATEG,  default=CATEG[1], max_length=20)
     
     def __str__(self):
         return f"{self.name}"
@@ -74,7 +74,7 @@ class Anime(models.Model):
         ]
 
 class Users(models.Model):
-    name = models.CharField('Имя пользователя')
+    name = models.CharField('Имя пользователя', max_length=150)
     email = models.CharField('Почта', max_length=150)
     description = models.TextField("Описание профиля", max_length=300)
     last_login_time = models.DateTimeField("Время последнего входа")
@@ -92,7 +92,7 @@ class Users(models.Model):
         ]
         
 class playlists(models.Model):
-    name = models.CharField('Название плейлиста')
+    name = models.CharField('Название плейлиста', max_length=200)
     id_anime = models.ForeignKey(Anime, on_delete=models.CASCADE)
     id_user = models.ForeignKey(Users, on_delete=models.CASCADE)
 
@@ -145,7 +145,6 @@ class reviews(models.Model):
     text = models.TextField("Текст отзыва")
     Release_date = models.DateField("Время создания")
     
-    # Добавляем оценки по разным аспектам
     design_rating = models.IntegerField('Оценка дизайна', default=0)
     usability_rating = models.IntegerField('Оценка удобства', default=0)
     content_rating = models.IntegerField('Оценка контента', default=0)
@@ -161,3 +160,18 @@ class reviews(models.Model):
         indexes = [
             models.Index(fields=["id_user"])
         ]
+
+class Favorite(models.Model):
+    """Модель для избранного пользователя"""
+    id_user = models.ForeignKey(Users, on_delete=models.CASCADE, verbose_name="Пользователь")
+    id_anime = models.ForeignKey(Anime, on_delete=models.CASCADE, verbose_name="Аниме")
+    created_at = models.DateTimeField("Дата добавления", auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Избранное"
+        verbose_name_plural = "Избранное"
+        unique_together = ['id_user', 'id_anime']
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.id_user} - {self.id_anime}"

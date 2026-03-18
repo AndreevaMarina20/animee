@@ -1,25 +1,34 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
 from .models import *
 from django.contrib.auth.models import User
-from django.contrib.auth import login, authenticate
-from django.shortcuts import render, redirect
-from django.contrib.auth import logout
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import ReviewForm
 from django.utils import timezone
+from django.views.decorators.http import require_POST
+import json
 
 def home(request):
     latest_anime = Anime.objects.all()[:6]
-    return render(request, 'main.html', {'animes': latest_anime})  # убрал 'anime_app/'
-
-def catalog(request):
-    all_anime = Anime.objects.all()
-    return render(request, 'main.html', {'animes': all_anime})  # или создайте catalog.html
+    return render(request, 'main.html', {'animes': latest_anime})
 
 def anime_detail(request, anime_id):
     anime = get_object_or_404(Anime, id=anime_id)
-    return render(request, 'anime_detail.html', {'anime': anime})  # убрал 'anime_app/'
+    
+    is_favorite = False
+    if request.user.is_authenticated:
+        try:
+            user_profile = Users.objects.get(name=request.user.username)
+            is_favorite = Favorite.objects.filter(id_user=user_profile, id_anime=anime).exists()
+        except Users.DoesNotExist:
+            pass
+    
+    return render(request, 'anime_detail.html', {
+        'anime': anime,
+        'is_favorite': is_favorite
+    })
 
 def watch_episode(request, anime_id, episode_id):
     anime = get_object_or_404(Anime, id=anime_id)
@@ -35,16 +44,17 @@ def watch_episode(request, anime_id, episode_id):
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST.get('username')  # меняем на username
+        username = request.POST.get('username')
         password = request.POST.get('password')
         
         user = authenticate(request, username=username, password=password)
         
         if user is not None:
             login(request, user)
+            messages.success(request, f'Добро пожаловать, {username}!')
             return redirect('home')
         else:
-            return render(request, 'login.html', {'error': 'Неверный логин или пароль'})
+            messages.error(request, 'Неверный логин или пароль')
     
     return render(request, 'login.html')
 
@@ -58,25 +68,36 @@ def register_view(request):
         if password1 == password2:
             try:
                 user = User.objects.create_user(
-                    username=username,  # используем username
+                    username=username,
                     email=email,
                     password=password1
                 )
                 login(request, user)
+                
+                Users.objects.create(
+                    name=username,
+                    email=email,
+                    description='Пользователь сайта',
+                    last_login_time=timezone.now(),
+                    account_creation_date=timezone.now().date()
+                )
+                
+                messages.success(request, 'Регистрация прошла успешно!')
                 return redirect('home')
-            except:
-                return render(request, 'register.html', {'error': 'Пользователь с таким логином уже существует'})
+            except Exception as e:
+                messages.error(request, 'Пользователь с таким логином уже существует')
         else:
-            return render(request, 'register.html', {'error': 'Пароли не совпадают'})
+            messages.error(request, 'Пароли не совпадают')
     
     return render(request, 'register.html')
 
 def logout_view(request):
     logout(request)
+    messages.info(request, 'Вы вышли из аккаунта')
     return redirect('home')
 
 def categories(request):
-    category_type = request.GET.get('category', 'сериалы')  # по умолчанию сериалы
+    category_type = request.GET.get('category', 'сериалы')
     
     if category_type == 'фильмы':
         animes = Anime.objects.filter(category='Фильм')
@@ -89,51 +110,122 @@ def categories(request):
     }
     return render(request, 'categories.html', context)
 
-    
-@login_required
-def profile(request):
-    user = request.user
-    context = {
-        'user': user,
-    }
-    return render(request, 'profile.html', context)
-
 @login_required
 def profile(request):
     user = request.user
     success_message = None
     
+    try:
+        user_profile = Users.objects.get(name=user.username)
+    except Users.DoesNotExist:
+        user_profile = Users.objects.create(
+            name=user.username,
+            email=user.email,
+            description='Пользователь сайта',
+            last_login_time=timezone.now(),
+            account_creation_date=timezone.now().date()
+        )
+    
+    favorites = Favorite.objects.filter(id_user=user_profile).select_related('id_anime')
+    
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
             review = form.save(commit=False)
-            user_profile, created = Users.objects.get_or_create(
-                name=user.username,
-                defaults={
-                    'email': user.email,
-                    'description': 'Пользователь сайта',
-                    'last_login_time': timezone.now(),
-                    'account_creation_date': timezone.now().date()
-                }
-            )
             review.id_user = user_profile
             review.Release_date = timezone.now().date()
             
-            review.estimation = int(form.cleaned_data['estimation'])
-            review.design_rating = int(form.cleaned_data['design_rating'])
-            review.usability_rating = int(form.cleaned_data['usability_rating'])
-            review.content_rating = int(form.cleaned_data['content_rating'])
-            review.performance_rating = int(form.cleaned_data['performance_rating'])
+            review.estimation = int(request.POST.get('estimation', 5))
+            review.design_rating = int(request.POST.get('design_rating', 5))
+            review.usability_rating = int(request.POST.get('usability_rating', 5))
+            review.content_rating = int(request.POST.get('content_rating', 5))
+            review.performance_rating = int(request.POST.get('performance_rating', 5))
             
             review.save()
-            success_message = "Спасибо за ваш отзыв! Он был успешно отправлен."
-            form = ReviewForm()
+            
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Спасибо за ваш отзыв!'
+                })
+            
+            messages.success(request, 'Спасибо за ваш отзыв!')
+            return redirect('profile')
     else:
         form = ReviewForm()
     
     context = {
         'user': user,
+        'user_profile': user_profile,
         'form': form,
-        'success_message': success_message,
+        'favorites': favorites,
+        'favorites_count': favorites.count(),
     }
     return render(request, 'profile.html', context)
+
+@login_required
+@require_POST
+def toggle_favorite(request):
+    try:
+        data = json.loads(request.body)
+        anime_id = data.get('anime_id')
+        
+        if not anime_id:
+            return JsonResponse({'success': False, 'error': 'Не указан ID аниме'}, status=400)
+        
+        anime = get_object_or_404(Anime, id=anime_id)
+        user_profile = get_object_or_404(Users, name=request.user.username)
+        
+        favorite, created = Favorite.objects.get_or_create(
+            id_user=user_profile,
+            id_anime=anime
+        )
+        
+        if not created:
+            favorite.delete()
+            return JsonResponse({
+                'success': True,
+                'action': 'removed',
+                'message': f'"{anime.name}" удалено из избранного'
+            })
+        else:
+            return JsonResponse({
+                'success': True,
+                'action': 'added',
+                'message': f'"{anime.name}" добавлено в избранное'
+            })
+            
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+@login_required
+def get_favorites_count(request):
+    try:
+        user_profile = Users.objects.get(name=request.user.username)
+        count = Favorite.objects.filter(id_user=user_profile).count()
+        return JsonResponse({'success': True, 'count': count})
+    except Users.DoesNotExist:
+        return JsonResponse({'success': False, 'count': 0})
+
+@login_required
+def favorites_view(request):
+    """Страница с избранным пользователя"""
+    try:
+        user_profile = Users.objects.get(name=request.user.username)
+    except Users.DoesNotExist:
+        user_profile = Users.objects.create(
+            name=request.user.username,
+            email=request.user.email,
+            description='Пользователь сайта',
+            last_login_time=timezone.now(),
+            account_creation_date=timezone.now().date()
+        )
+    
+    # Получаем все избранное пользователя
+    favorites = Favorite.objects.filter(id_user=user_profile).select_related('id_anime').order_by('-created_at')
+    
+    context = {
+        'favorites': favorites,
+        'favorites_count': favorites.count(),
+    }
+    return render(request, 'favorites.html', context)

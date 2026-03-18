@@ -7,10 +7,10 @@
         <h1 class="categories-title">Категории аниме</h1>
         
         <div class="category-buttons">
-            <a href="?category=сериалы" class="category-btn {% if current_category == 'сериалы' %}active{% endif %}">
+            <a href="?category=сериалы" class="category-btn {% if current_category == 'сериалы' %}active{% endif %}" data-category="series">
                 Аниме-сериалы
             </a>
-            <a href="?category=фильмы" class="category-btn {% if current_category == 'фильмы' %}active{% endif %}">
+            <a href="?category=фильмы" class="category-btn {% if current_category == 'фильмы' %}active{% endif %}" data-category="movies">
                 Аниме-фильмы
             </a>
         </div>
@@ -18,7 +18,7 @@
 
     <div class="anime-list">
         {% for anime in animes %}
-        <div class="anime-card">
+        <div class="anime-card" data-anime-id="{{ anime.id }}">
             <div class="anime-poster">
                 {% if anime.poster %}
                     <img src="{{ anime.poster.url }}" alt="{{ anime.name }}">
@@ -46,4 +46,55 @@
         {% endfor %}
     </div>
 </div>
+
+<!-- Добавляем скрипт для анимации карточек при загрузке -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Анимация появления карточек при загрузке страницы
+    const animeCards = document.querySelectorAll('.anime-card');
+    animeCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            card.style.transition = 'all 0.5s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, index * 100);
+    });
+});
+</script>
+
+<style>
+/* Дополнительные стили для анимации */
+.anime-card {
+    transition: all 0.3s ease;
+}
+
+.anime-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(124, 77, 255, 0.2);
+}
+
+.category-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.category-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #7c4dff;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.category-btn:hover::after,
+.category-btn.active::after {
+    transform: scaleX(1);
+}
+</style>
 {% endblock %}

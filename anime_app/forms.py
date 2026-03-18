@@ -2,40 +2,13 @@ from django import forms
 from .models import reviews
 
 class ReviewForm(forms.ModelForm):
-    # Поля для оценок с выбором от 1 до 5
-    RATING_CHOICES = [
-        (1, '1'),
-        (2, '2'), 
-        (3, '3'),
-        (4, '4'),
-        (5, '5'),
-    ]
+    RATING_CHOICES = [(i, str(i)) for i in range(1, 6)]
     
-    estimation = forms.ChoiceField(
-        choices=RATING_CHOICES,
-        widget=forms.RadioSelect(),
-        label='Общая оценка'
-    )
-    design_rating = forms.ChoiceField(
-        choices=RATING_CHOICES,
-        widget=forms.RadioSelect(),
-        label='Дизайн сайта'
-    )
-    usability_rating = forms.ChoiceField(
-        choices=RATING_CHOICES,
-        widget=forms.RadioSelect(),
-        label='Удобство использования'
-    )
-    content_rating = forms.ChoiceField(
-        choices=RATING_CHOICES,
-        widget=forms.RadioSelect(),
-        label='Качество контента'
-    )
-    performance_rating = forms.ChoiceField(
-        choices=RATING_CHOICES,
-        widget=forms.RadioSelect(),
-        label='Производительность'
-    )
+    estimation = forms.ChoiceField(choices=RATING_CHOICES, widget=forms.HiddenInput(), initial=5)
+    design_rating = forms.ChoiceField(choices=RATING_CHOICES, widget=forms.HiddenInput(), initial=5)
+    usability_rating = forms.ChoiceField(choices=RATING_CHOICES, widget=forms.HiddenInput(), initial=5)
+    content_rating = forms.ChoiceField(choices=RATING_CHOICES, widget=forms.HiddenInput(), initial=5)
+    performance_rating = forms.ChoiceField(choices=RATING_CHOICES, widget=forms.HiddenInput(), initial=5)
     
     class Meta:
         model = reviews
@@ -44,9 +17,7 @@ class ReviewForm(forms.ModelForm):
             'text': forms.Textarea(attrs={
                 'class': 'review-textarea',
                 'placeholder': 'Напишите ваш отзыв о сайте...',
-                'rows': 4
+                'rows': 4,
+                'required': True
             }),
-        }
-        labels = {
-            'text': 'Текст отзыва',
         }

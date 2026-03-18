@@ -15,15 +15,15 @@
             <p class="profile-email">{{ user.email }}</p>
             <div class="profile-stats">
                 <div class="stat">
-                    <span class="stat-number">0</span>
-                    <span class="stat-label">Просмотрено</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-number">0</span>
+                    <span class="stat-number" id="favoritesCount">{{ favorites_count }}</span>
                     <span class="stat-label">В избранном</span>
                 </div>
                 <div class="stat">
-                    <span class="stat-number">0</span>
+                    <span class="stat-number" id="watchedCount">0</span>
+                    <span class="stat-label">Просмотрено</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="commentsCount">0</span>
                     <span class="stat-label">Комментариев</span>
                 </div>
             </div>
@@ -35,99 +35,103 @@
         <button class="action-btn secondary">Настройки</button>
     </div>
 
+    <!-- Секция с избранным -->
+    <div class="favorites-section">
+        <h2 class="section-title">Мое избранное</h2>
+        
+        {% if favorites %}
+        <div class="favorites-grid">
+            {% for favorite in favorites %}
+            <div class="favorite-item">
+                <div class="favorite-poster">
+                    {% if favorite.id_anime.poster %}
+                        <img src="{{ favorite.id_anime.poster.url }}" alt="{{ favorite.id_anime.name }}">
+                    {% else %}
+                        <div class="poster-placeholder-small">{{ favorite.id_anime.name|slice:":1" }}</div>
+                    {% endif %}
+                </div>
+                <div class="favorite-info">
+                    <h3 class="favorite-title">{{ favorite.id_anime.name }}</h3>
+                    <p class="favorite-meta">{{ favorite.id_anime.quantity_of_episodes }} эп. | ★ {{ favorite.id_anime.rating }}</p>
+                    <a href="{% url 'anime_detail' favorite.id_anime.id %}" class="favorite-watch-btn">Смотреть</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-favorites">
+            <p>У вас пока нет избранного аниме</p>
+            <a href="{% url 'categories' %}" class="browse-btn">Перейти к каталогу</a>
+        </div>
+        {% endif %}
+    </div>
+
     <!-- Секция для оставления отзыва -->
     <div class="review-section">
         <h2 class="section-title">Оставить отзыв о сайте</h2>
-        
-        {% if success_message %}
-        <div class="success-message">
-            {{ success_message }}
-        </div>
-        {% endif %}
         
         <form class="review-form" method="post" id="reviewForm">
             {% csrf_token %}
             
             <div class="rating-categories">
+                <input type="hidden" name="estimation" id="estimation" value="5">
+                <input type="hidden" name="design_rating" id="design_rating" value="5">
+                <input type="hidden" name="usability_rating" id="usability_rating" value="5">
+                <input type="hidden" name="content_rating" id="content_rating" value="5">
+                <input type="hidden" name="performance_rating" id="performance_rating" value="5">
+                
                 <div class="rating-category">
-                    <label class="rating-label">{{ form.design_rating.label }}:</label>
-                    <div class="heart-rating-wrapper">
-                        {% for choice in form.design_rating %}
-                        <div class="heart-checkbox">
-                            {{ choice.tag }}
-                            <label for="{{ choice.id_for_label }}" class="heart-label">
-                                <span class="heart-text">{% for i in choice.choice_label %}{% if forloop.counter <= choice.data.value|add:"0" %}❤{% else %}♡{% endif %}{% endfor %}</span>
-                            </label>
-                        </div>
+                    <label class="rating-label">Общая оценка:</label>
+                    <div class="star-rating" data-field="estimation">
+                        {% for i in "12345" %}
+                        <span class="star" data-value="{{ forloop.counter }}">★</span>
                         {% endfor %}
                     </div>
                 </div>
                 
                 <div class="rating-category">
-                    <label class="rating-label">{{ form.usability_rating.label }}:</label>
-                    <div class="heart-rating-wrapper">
-                        {% for choice in form.usability_rating %}
-                        <div class="heart-checkbox">
-                            {{ choice.tag }}
-                            <label for="{{ choice.id_for_label }}" class="heart-label">
-                                <span class="heart-text">{% for i in choice.choice_label %}{% if forloop.counter <= choice.data.value|add:"0" %}❤{% else %}♡{% endif %}{% endfor %}</span>
-                            </label>
-                        </div>
+                    <label class="rating-label">Дизайн сайта:</label>
+                    <div class="star-rating" data-field="design_rating">
+                        {% for i in "12345" %}
+                        <span class="star" data-value="{{ forloop.counter }}">★</span>
                         {% endfor %}
                     </div>
                 </div>
                 
                 <div class="rating-category">
-                    <label class="rating-label">{{ form.content_rating.label }}:</label>
-                    <div class="heart-rating-wrapper">
-                        {% for choice in form.content_rating %}
-                        <div class="heart-checkbox">
-                            {{ choice.tag }}
-                            <label for="{{ choice.id_for_label }}" class="heart-label">
-                                <span class="heart-text">{% for i in choice.choice_label %}{% if forloop.counter <= choice.data.value|add:"0" %}❤{% else %}♡{% endif %}{% endfor %}</span>
-                            </label>
-                        </div>
+                    <label class="rating-label">Удобство использования:</label>
+                    <div class="star-rating" data-field="usability_rating">
+                        {% for i in "12345" %}
+                        <span class="star" data-value="{{ forloop.counter }}">★</span>
                         {% endfor %}
                     </div>
                 </div>
                 
                 <div class="rating-category">
-                    <label class="rating-label">{{ form.performance_rating.label }}:</label>
-                    <div class="heart-rating-wrapper">
-                        {% for choice in form.performance_rating %}
-                        <div class="heart-checkbox">
-                            {{ choice.tag }}
-                            <label for="{{ choice.id_for_label }}" class="heart-label">
-                                <span class="heart-text">{% for i in choice.choice_label %}{% if forloop.counter <= choice.data.value|add:"0" %}❤{% else %}♡{% endif %}{% endfor %}</span>
-                            </label>
-                        </div>
+                    <label class="rating-label">Качество контента:</label>
+                    <div class="star-rating" data-field="content_rating">
+                        {% for i in "12345" %}
+                        <span class="star" data-value="{{ forloop.counter }}">★</span>
                         {% endfor %}
                     </div>
                 </div>
                 
                 <div class="rating-category">
-                    <label class="rating-label">{{ form.estimation.label }}:</label>
-                    <div class="heart-rating-wrapper">
-                        {% for choice in form.estimation %}
-                        <div class="heart-checkbox">
-                            {{ choice.tag }}
-                            <label for="{{ choice.id_for_label }}" class="heart-label">
-                                <span class="heart-text">{% for i in choice.choice_label %}{% if forloop.counter <= choice.data.value|add:"0" %}❤{% else %}♡{% endif %}{% endfor %}</span>
-                            </label>
-                        </div>
+                    <label class="rating-label">Производительность:</label>
+                    <div class="star-rating" data-field="performance_rating">
+                        {% for i in "12345" %}
+                        <span class="star" data-value="{{ forloop.counter }}">★</span>
                         {% endfor %}
                     </div>
                 </div>
             </div>
             
             <div class="form-group">
-                <label class="form-label">{{ form.text.label }}:</label>
-                {{ form.text }}
+                <label class="form-label">Текст отзыва:</label>
+                <textarea name="text" class="review-textarea" placeholder="Напишите ваш отзыв о сайте..." rows="4" required></textarea>
             </div>
             
-            <button type="submit" class="submit-btn">
-                Отправить отзыв
-            </button>
+            <button type="submit" class="submit-btn">Отправить отзыв</button>
         </form>
     </div>
 </div>

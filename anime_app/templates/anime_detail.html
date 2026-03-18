@@ -2,8 +2,7 @@
 {% load static %}
 
 {% block content %}
-<div class="anime-detail-container">
-    <!-- Кнопка назад -->
+<div class="anime-detail-container" data-anime-id="{{ anime.id }}">
     <a href="{% url 'home' %}" class="back-btn">← Назад</a>
     
     <div class="anime-detail-header">
@@ -56,7 +55,19 @@
 
             <div class="action-buttons">
                 <a href="#video-player-section" class="watch-btn-main">Смотреть онлайн</a>
-                <button class="favorite-btn">❤ Добавить в избранное</button>
+                {% if user.is_authenticated %}
+                <button class="favorite-btn {% if is_favorite %}active{% endif %}" id="favoriteBtn">
+                    {% if is_favorite %}
+                        ✓ В избранном
+                    {% else %}
+                        ❤ Добавить в избранное
+                    {% endif %}
+                </button>
+                {% else %}
+                <a href="{% url 'login' %}?next={{ request.path }}" class="favorite-btn">
+                    ❤ Войдите чтобы добавить
+                </a>
+                {% endif %}
             </div>
         </div>
     </div>
