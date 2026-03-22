@@ -2,6 +2,45 @@
 {% load static %}
 
 {% block content %}
+<style>
+/* Стили для звездного рейтинга */
+.star-rating {
+    display: flex;
+    gap: 8px;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.star {
+    color: #444 !important;
+    transition: all 0.2s ease;
+}
+
+.star.active {
+    color: #FFD700 !important;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+.star:hover {
+    transform: scale(1.2);
+}
+
+.rating-category {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.rating-label {
+    font-size: 15px;
+    color: #f5f5f5;
+    font-weight: 500;
+    min-width: 180px;
+}
+</style>
+
 <div class="profile-page">
     <div class="profile-card">
         <div class="profile-avatar">
@@ -31,39 +70,8 @@
     </div>
 
     <div class="profile-actions">
-        <button class="action-btn primary">Редактировать профиль</button>
-        <button class="action-btn secondary">Настройки</button>
-    </div>
-
-    <!-- Секция с избранным -->
-    <div class="favorites-section">
-        <h2 class="section-title">Мое избранное</h2>
-        
-        {% if favorites %}
-        <div class="favorites-grid">
-            {% for favorite in favorites %}
-            <div class="favorite-item">
-                <div class="favorite-poster">
-                    {% if favorite.id_anime.poster %}
-                        <img src="{{ favorite.id_anime.poster.url }}" alt="{{ favorite.id_anime.name }}">
-                    {% else %}
-                        <div class="poster-placeholder-small">{{ favorite.id_anime.name|slice:":1" }}</div>
-                    {% endif %}
-                </div>
-                <div class="favorite-info">
-                    <h3 class="favorite-title">{{ favorite.id_anime.name }}</h3>
-                    <p class="favorite-meta">{{ favorite.id_anime.quantity_of_episodes }} эп. | ★ {{ favorite.id_anime.rating }}</p>
-                    <a href="{% url 'anime_detail' favorite.id_anime.id %}" class="favorite-watch-btn">Смотреть</a>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="no-favorites">
-            <p>У вас пока нет избранного аниме</p>
-            <a href="{% url 'categories' %}" class="browse-btn">Перейти к каталогу</a>
-        </div>
-        {% endif %}
+        <button class="action-btn primary" onclick="if(window.showNotification) window.showNotification('Редактирование профиля будет доступно скоро', 'info')">Редактировать профиль</button>
+        <button class="action-btn secondary" onclick="if(window.showNotification) window.showNotification('Настройки будут доступны скоро', 'info')">Настройки</button>
     </div>
 
     <!-- Секция для оставления отзыва -->
@@ -135,4 +143,137 @@
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Profile page loaded');
+    
+    // ==================== ЗВЕЗДНЫЙ РЕЙТИНГ ====================
+    function setupStarRating() {
+        const ratingContainers = document.querySelectorAll('.star-rating');
+        console.log('Found star containers:', ratingContainers.length);
+        
+        ratingContainers.forEach((container, idx) => {
+            const stars = container.querySelectorAll('.star');
+            const hiddenInputId = container.dataset.field;
+            const hiddenInput = document.getElementById(hiddenInputId);
+            
+            if (!hiddenInput) {
+                console.log('Hidden input not found for:', hiddenInputId);
+                return;
+            }
+            
+            console.log('Setting up rating for:', hiddenInputId);
+            
+            // Функция обновления звезд
+            function updateStars(value) {
+                stars.forEach(star => {
+                    const starValue = parseInt(star.dataset.value);
+                    if (starValue <= value) {
+                        star.classList.add('active');
+                    } else {
+                        star.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Устанавливаем начальное значение (5 звезд)
+            updateStars(5);
+            
+            // Добавляем события
+            stars.forEach(star => {
+                // Наведение мыши
+                star.addEventListener('mouseenter', function() {
+                    const value = parseInt(this.dataset.value);
+                    updateStars(value);
+                });
+                
+                // Клик
+                star.addEventListener('click', function() {
+                    const value = parseInt(this.dataset.value);
+                    hiddenInput.value = value;
+                    updateStars(value);
+                    console.log('Rating set to:', value);
+                });
+            });
+            
+            // Уход мыши - возвращаем к сохраненному значению
+            container.addEventListener('mouseleave', function() {
+                const currentValue = parseInt(hiddenInput.value);
+                updateStars(currentValue);
+            });
+        });
+    }
+    
+    // ==================== ФОРМА ОТЗЫВА ====================
+    function setupReviewForm() {
+        const form = document.getElementById('reviewForm');
+        if (!form) {
+            console.log('Review form not found');
+            return;
+        }
+        
+        console.log('Review form found');
+        
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Отправка...';
+            submitBtn.disabled = true;
+            
+            try {
+                const formData = new FormData(this);
+                const response = await fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || ''
+                    }
+                });
+                
+                const data = await response.json();
+                console.log('Response:', data);
+                
+                if (data.success) {
+                    if (window.showNotification) {
+                        window.showNotification(data.message, 'success');
+                    } else {
+                        alert(data.message);
+                    }
+                    
+                    // Очищаем форму
+                    this.reset();
+                    
+                    // Сбрасываем звезды на 5
+                    document.querySelectorAll('.star-rating').forEach(container => {
+                        const hiddenInputId = container.dataset.field;
+                        const hiddenInput = document.getElementById(hiddenInputId);
+                        if (hiddenInput) {
+                            hiddenInput.value = '5';
+                            container.querySelectorAll('.star').forEach(star => {
+                                star.classList.add('active');
+                            });
+                        }
+                    });
+                } else {
+                    alert(data.error || 'Ошибка при отправке');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Ошибка при отправке: ' + error.message);
+            } finally {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    }
+    
+    // Запускаем
+    setupStarRating();
+    setupReviewForm();
+});
+</script>
 {% endblock %}

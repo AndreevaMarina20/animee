@@ -9,6 +9,9 @@ from .forms import ReviewForm
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 def home(request):
     latest_anime = Anime.objects.all()[:6]
@@ -65,8 +68,27 @@ def register_view(request):
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
         
+        # Проверка длины логина
+        if len(username) < 3:
+            messages.error(request, 'Логин должен содержать минимум 3 символа')
+            return render(request, 'register.html')
+        
+        # Проверка пароля
+        if len(password1) < 8:
+            messages.error(request, 'Пароль должен содержать минимум 8 символов')
+            return render(request, 'register.html')
+        
         if password1 == password2:
             try:
+                # Проверяем, существует ли пользователь
+                if User.objects.filter(username=username).exists():
+                    messages.error(request, 'Пользователь с таким логином уже существует')
+                    return render(request, 'register.html')
+                
+                if User.objects.filter(email=email).exists():
+                    messages.error(request, 'Пользователь с таким email уже существует')
+                    return render(request, 'register.html')
+                
                 user = User.objects.create_user(
                     username=username,
                     email=email,
@@ -74,6 +96,7 @@ def register_view(request):
                 )
                 login(request, user)
                 
+                # Создаем профиль пользователя в модели Users
                 Users.objects.create(
                     name=username,
                     email=email,
@@ -82,12 +105,14 @@ def register_view(request):
                     account_creation_date=timezone.now().date()
                 )
                 
-                messages.success(request, 'Регистрация прошла успешно!')
+                messages.success(request, f'Регистрация прошла успешно! Добро пожаловать, {username}!')
                 return redirect('home')
             except Exception as e:
-                messages.error(request, 'Пользователь с таким логином уже существует')
+                messages.error(request, f'Ошибка при регистрации: {str(e)}')
+                return render(request, 'register.html')
         else:
             messages.error(request, 'Пароли не совпадают')
+            return render(request, 'register.html')
     
     return render(request, 'register.html')
 
@@ -113,7 +138,6 @@ def categories(request):
 @login_required
 def profile(request):
     user = request.user
-    success_message = None
     
     try:
         user_profile = Users.objects.get(name=user.username)
@@ -126,7 +150,8 @@ def profile(request):
             account_creation_date=timezone.now().date()
         )
     
-    favorites = Favorite.objects.filter(id_user=user_profile).select_related('id_anime')
+    # Только количество избранного, без списка
+    favorites_count = Favorite.objects.filter(id_user=user_profile).count()
     
     if request.method == 'POST':
         form = ReviewForm(request.POST)
@@ -158,54 +183,9 @@ def profile(request):
         'user': user,
         'user_profile': user_profile,
         'form': form,
-        'favorites': favorites,
-        'favorites_count': favorites.count(),
+        'favorites_count': favorites_count,  # Только число, без списка аниме
     }
     return render(request, 'profile.html', context)
-
-@login_required
-@require_POST
-def toggle_favorite(request):
-    try:
-        data = json.loads(request.body)
-        anime_id = data.get('anime_id')
-        
-        if not anime_id:
-            return JsonResponse({'success': False, 'error': 'Не указан ID аниме'}, status=400)
-        
-        anime = get_object_or_404(Anime, id=anime_id)
-        user_profile = get_object_or_404(Users, name=request.user.username)
-        
-        favorite, created = Favorite.objects.get_or_create(
-            id_user=user_profile,
-            id_anime=anime
-        )
-        
-        if not created:
-            favorite.delete()
-            return JsonResponse({
-                'success': True,
-                'action': 'removed',
-                'message': f'"{anime.name}" удалено из избранного'
-            })
-        else:
-            return JsonResponse({
-                'success': True,
-                'action': 'added',
-                'message': f'"{anime.name}" добавлено в избранное'
-            })
-            
-    except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)}, status=400)
-
-@login_required
-def get_favorites_count(request):
-    try:
-        user_profile = Users.objects.get(name=request.user.username)
-        count = Favorite.objects.filter(id_user=user_profile).count()
-        return JsonResponse({'success': True, 'count': count})
-    except Users.DoesNotExist:
-        return JsonResponse({'success': False, 'count': 0})
 
 @login_required
 def favorites_view(request):
@@ -221,7 +201,7 @@ def favorites_view(request):
             account_creation_date=timezone.now().date()
         )
     
-    # Получаем все избранное пользователя
+    # Получаем все избранное пользователя для отдельной страницы
     favorites = Favorite.objects.filter(id_user=user_profile).select_related('id_anime').order_by('-created_at')
     
     context = {
@@ -229,3 +209,77 @@ def favorites_view(request):
         'favorites_count': favorites.count(),
     }
     return render(request, 'favorites.html', context)
+
+@login_required
+@require_POST
+def toggle_favorite(request):
+    """API для добавления/удаления из избранного"""
+    try:
+        data = json.loads(request.body)
+        anime_id = data.get('anime_id')
+        
+        logger.info(f"Toggle favorite - User: {request.user.username}, Anime ID: {anime_id}")
+        
+        if not anime_id:
+            return JsonResponse({'success': False, 'error': 'Не указан ID аниме'}, status=400)
+        
+        # Получаем аниме
+        try:
+            anime = Anime.objects.get(id=anime_id)
+        except Anime.DoesNotExist:
+            logger.error(f"Anime with ID {anime_id} not found")
+            return JsonResponse({'success': False, 'error': 'Аниме не найдено'}, status=404)
+        
+        # Получаем профиль пользователя
+        try:
+            user_profile = Users.objects.get(name=request.user.username)
+        except Users.DoesNotExist:
+            # Создаем профиль, если не существует
+            logger.info(f"Creating user profile for {request.user.username}")
+            user_profile = Users.objects.create(
+                name=request.user.username,
+                email=request.user.email,
+                description='Пользователь сайта',
+                last_login_time=timezone.now(),
+                account_creation_date=timezone.now().date()
+            )
+        
+        # Проверяем, есть ли уже в избранном
+        favorite = Favorite.objects.filter(id_user=user_profile, id_anime=anime).first()
+        
+        if favorite:
+            # Удаляем из избранного
+            favorite.delete()
+            logger.info(f"Removed from favorites: {anime.name}")
+            return JsonResponse({
+                'success': True,
+                'action': 'removed',
+                'message': f'"{anime.name}" удалено из избранного'
+            })
+        else:
+            # Добавляем в избранное
+            favorite = Favorite.objects.create(
+                id_user=user_profile,
+                id_anime=anime
+            )
+            logger.info(f"Added to favorites: {anime.name}")
+            return JsonResponse({
+                'success': True,
+                'action': 'added',
+                'message': f'"{anime.name}" добавлено в избранное'
+            })
+            
+    except Exception as e:
+        logger.error(f"Error in toggle_favorite: {str(e)}", exc_info=True)
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)
+
+@login_required
+def get_favorites_count(request):
+    """API для получения количества избранного"""
+    try:
+        user_profile = Users.objects.get(name=request.user.username)
+        count = Favorite.objects.filter(id_user=user_profile).count()
+        logger.info(f"Favorites count for {request.user.username}: {count}")
+        return JsonResponse({'success': True, 'count': count})
+    except Users.DoesNotExist:
+        return JsonResponse({'success': False, 'count': 0})
