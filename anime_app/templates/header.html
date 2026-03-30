@@ -22,32 +22,3 @@
         <a href="{% url 'login' %}" class="login-btn">Войти</a>
     {% endif %}
 </header>
-
-<style>
-nav ul li {
-    position: relative;
-    display: inline-block;
-}
-
-.favorites-count-badge {
-    position: absolute;
-    top: -8px;
-    right: -12px;
-    background: #ff4757;
-    color: white;
-    font-size: 11px;
-    font-weight: bold;
-    min-width: 18px;
-    height: 18px;
-    border-radius: 9px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 5px;
-    box-shadow: 0 2px 5px rgba(255, 71, 87, 0.3);
-}
-
-.favorites-count-badge:empty {
-    display: none;
-}
-</style>

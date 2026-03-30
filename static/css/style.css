@@ -5,17 +5,12 @@
 }
 
 body {
-    background-color: #000000;
+    background: #000;
     color: #f5f5f5;
-    line-height: 1.6;
-    padding: 20px;
     font-family: 'Inter', sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
+    padding: 20px;
 }
-        
+
 header {
     display: flex;
     justify-content: space-between;
@@ -23,15 +18,12 @@ header {
     padding: 15px 40px;
     border-bottom: 2px solid #2a2a2a;
     margin-bottom: 40px;
-    background-color: #0a0a0a;
-    width: 100%;
+    background: #0a0a0a;
 }
 
 .logo {
     font-size: 24px;
     font-weight: bold;
-    color: #f5f5f5;
-    margin-right: auto;
     font-family: 'Merienda One', cursive;
 }
 
@@ -44,51 +36,38 @@ nav ul {
 nav a {
     text-decoration: none;
     color: #f5f5f5;
-    padding: 5px 10px;
-    font-weight: 500;
-    font-style: italic;
-    transition: color 0.2s ease;
+    transition: color .2s;
 }
 
 nav a:hover {
     color: #9d7aff;
 }
-        
+
 .login-btn {
-    background-color: #2a2a2a;
+    background: #2a2a2a;
     color: #f5f5f5;
-    border: none;
     padding: 10px 24px;
     border-radius: 20px;
-    margin-left: auto;
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
     text-decoration: none;
-    display: inline-block;
-    transition: background-color 0.2s ease;
+    transition: background .2s;
 }
 
 .login-btn:hover {
-    background-color: #9d7aff;
+    background: #9d7aff;
 }
 
-/* Контейнеры */
-.main-container, .categories-container, .anime-detail-container, .profile-page {
+.main-container, .categories-container, .anime-detail-container, .profile-page, .favorites-page {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
 
-.main-title, .categories-title {
-    font-family: 'Inter', sans-serif;
+.main-title, .categories-title, .favorites-title {
     font-size: 36px;
-    color: #f5f5f5;
     text-align: center;
     margin-bottom: 40px;
-    font-weight: 600;
 }
 
-/* Карточки аниме */
 .anime-list {
     display: flex;
     flex-direction: column;
@@ -97,144 +76,115 @@ nav a:hover {
 
 .anime-card {
     display: flex;
-    background-color: #1a1a1a;
+    background: #1a1a1a;
     border: 1px solid #2a2a2a;
     border-radius: 12px;
     padding: 20px;
     gap: 25px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    align-items: flex-start;
+    transition: all .3s;
+}
+
+.anime-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(124, 77, 255, 0.2);
+    border-color: #7c4dff;
 }
 
 .anime-poster {
-    flex-shrink: 0;
     width: 180px;
     height: 250px;
     border-radius: 8px;
     overflow: hidden;
-    border: 1px solid #333333;
 }
 
-.anime-poster img, .anime-detail-poster img {
+.anime-poster img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 6px;
-}
-
-.poster-placeholder {
-    width: 100%;
-    height: 100%;
-    background-color: #000000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #666666;
-    font-size: 14px;
-    text-align: center;
-    border-radius: 6px;
 }
 
 .anime-content {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    min-height: 250px;
 }
 
 .anime-name {
     font-size: 24px;
-    color: #f5f5f5;
     margin-bottom: 5px;
-    font-weight: 600;
 }
 
 .anime-original {
-    font-size: 16px;
     color: #9d7aff;
     margin-bottom: 15px;
-    font-style: italic;
-    font-weight: 500;
 }
 
 .anime-description {
+    color: #ccc;
     font-size: 14px;
-    color: #cccccc;
-    line-height: 1.6;
     margin-bottom: 15px;
-    flex: 1;
 }
 
 .anime-details {
     display: flex;
     gap: 15px;
     margin-bottom: 15px;
-    flex-wrap: wrap;
 }
 
-.anime-status, .anime-rating, .anime-episodes, .anime-category {
-    background-color: #000000;
+.anime-status, .anime-rating, .anime-episodes {
+    background: #000;
     padding: 5px 12px;
     border-radius: 20px;
     font-size: 12px;
-    font-weight: 600;
 }
 
 .anime-status { color: #9d7aff; border: 1px solid #9d7aff; }
 .anime-rating { color: #FFD700; border: 1px solid #FFD700; }
-.anime-episodes { color: #00FF00; border: 1px solid #00FF00; }
-.anime-category { color: #7c4dff; border: 1px solid #7c4dff; }
+.anime-episodes { color: #0f0; border: 1px solid #0f0; }
 
 .watch-btn {
-    background-color: #000000;
+    background: #000;
     color: #f5f5f5;
     border: 1px solid #2a2a2a;
     padding: 10px 20px;
     border-radius: 12px;
-    font-weight: 600;
     text-decoration: none;
-    text-align: center;
-    align-self: flex-start;
     display: inline-block;
-    transition: border-color 0.2s ease;
 }
 
 .watch-btn:hover {
     border-color: #9d7aff;
 }
 
-/* Детали аниме */
 .back-btn {
     display: inline-block;
     color: #f5f5f5;
-    text-decoration: none;
-    font-size: 16px;
     margin-bottom: 20px;
     padding: 8px 16px;
     border: 1px solid #2a2a2a;
     border-radius: 8px;
-    transition: background-color 0.2s ease;
+    text-decoration: none;
 }
 
 .back-btn:hover {
-    background-color: #2a2a2a;
+    background: #2a2a2a;
 }
 
 .anime-detail-header {
     display: flex;
     gap: 40px;
     margin-bottom: 40px;
-    align-items: flex-start;
 }
 
 .anime-detail-poster {
-    flex-shrink: 0;
     width: 300px;
     height: 450px;
     border-radius: 12px;
     overflow: hidden;
-    border: 1px solid #2a2a2a;
+}
+
+.anime-detail-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .anime-detail-info {
@@ -243,17 +193,12 @@ nav a:hover {
 
 .anime-detail-title {
     font-size: 36px;
-    color: #f5f5f5;
     margin-bottom: 10px;
-    font-weight: 600;
 }
 
 .anime-detail-original {
-    font-size: 18px;
     color: #9d7aff;
     margin-bottom: 30px;
-    font-style: italic;
-    font-weight: 500;
 }
 
 .anime-detail-grid {
@@ -263,114 +208,79 @@ nav a:hover {
     margin-bottom: 30px;
 }
 
-.detail-item {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
 .detail-label {
-    font-size: 16px;
     color: #9d7aff;
     font-weight: 600;
 }
 
 .detail-value {
-    font-size: 14px;
-    color: #cccccc;
+    color: #ccc;
 }
 
 .action-buttons {
     display: flex;
     gap: 15px;
-    margin-top: 20px;
 }
 
 .watch-btn-main {
-    background-color: #7c4dff;
+    background: #7c4dff;
     color: white;
-    border: none;
     padding: 12px 25px;
     border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
     text-decoration: none;
-    display: inline-block;
-    transition: background-color 0.2s ease;
 }
 
 .watch-btn-main:hover {
-    background-color: #6a3fe0;
+    background: #6a3fe0;
 }
 
 .favorite-btn {
-    background-color: transparent;
+    background: transparent;
     color: #f5f5f5;
     border: 2px solid #2a2a2a;
     padding: 12px 25px;
     border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    transition: background-color 0.2s ease;
+    cursor: pointer;
 }
 
-.favorite-btn:hover {
-    background-color: #2a2a2a;
+.favorite-btn.active {
+    background: #ff4757;
+    border-color: #ff4757;
+    color: white;
 }
 
 .section-title {
     font-size: 24px;
-    color: #f5f5f5;
     margin-bottom: 20px;
-    font-weight: 600;
 }
 
 .description-text {
-    font-size: 16px;
-    color: #cccccc;
-    line-height: 1.6;
-}
-
-/* Формы */
-.login-page-container, .registration-page-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 70vh;
-    padding: 20px;
+    color: #ccc;
 }
 
 .login-container, .registration-container {
-    background-color: #1a1a1a;
+    background: #1a1a1a;
     border-radius: 16px;
     padding: 50px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-    width: 100%;
     max-width: 480px;
-    border: 1px solid #2a2a2a;
-}
-
-.login-header, .registration-header {
-    text-align: center;
-    margin-bottom: 40px;
+    margin: 0 auto;
 }
 
 .login-title, .registration-title {
     font-size: 32px;
-    color: #f5f5f5;
+    text-align: center;
     margin-bottom: 15px;
-    font-weight: 600;
 }
 
 .register-link, .login-link {
+    text-align: center;
     color: #b3b3b3;
-    font-size: 16px;
+    margin-bottom: 40px;
 }
 
 .register-link a, .login-link a {
     color: #9d7aff;
     text-decoration: none;
-    font-weight: 600;
 }
 
 .form-group {
@@ -379,22 +289,16 @@ nav a:hover {
 
 .form-label {
     display: block;
-    font-size: 16px;
-    color: #f5f5f5;
     margin-bottom: 10px;
-    font-weight: 500;
 }
 
 .form-input {
     width: 100%;
     padding: 14px 18px;
+    background: #000;
     border: 1px solid #2a2a2a;
     border-radius: 8px;
-    font-size: 16px;
-    background-color: #000000;
     color: #f5f5f5;
-    box-sizing: border-box;
-    transition: border-color 0.2s ease;
 }
 
 .form-input:focus {
@@ -402,28 +306,20 @@ nav a:hover {
     outline: none;
 }
 
-.form-input::placeholder {
-    color: #666666;
-}
-
 .submit-btn {
     width: 100%;
-    background-color: #9d7aff;
+    background: #9d7aff;
     color: white;
-    border: none;
     padding: 16px;
     border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    margin-top: 10px;
-    transition: background-color 0.2s ease;
+    border: none;
+    cursor: pointer;
 }
 
 .submit-btn:hover {
-    background-color: #8b6bff;
+    background: #8b6bff;
 }
 
-/* Категории */
 .category-buttons {
     display: flex;
     justify-content: center;
@@ -432,47 +328,26 @@ nav a:hover {
 }
 
 .category-btn {
-    background-color: #1a1a1a;
+    background: #1a1a1a;
     color: #f5f5f5;
     border: 1px solid #2a2a2a;
     padding: 12px 30px;
     border-radius: 8px;
     text-decoration: none;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
-.category-btn:hover {
-    background-color: #2a2a2a;
-    border-color: #7c4dff;
 }
 
 .category-btn.active {
-    background-color: #7c4dff;
+    background: #7c4dff;
     border-color: #7c4dff;
 }
 
-.no-anime {
-    text-align: center;
-    padding: 50px;
-    color: #b3b3b3;
-    font-size: 18px;
-}
-
-/* Профиль */
 .profile-card {
     background: #1a1a1a;
     border-radius: 16px;
     padding: 40px;
     display: flex;
-    align-items: center;
     gap: 30px;
     margin-bottom: 30px;
-    border: 1px solid #2a2a2a;
-}
-
-.profile-avatar {
-    flex-shrink: 0;
 }
 
 .avatar-placeholder {
@@ -483,24 +358,16 @@ nav a:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
     font-size: 36px;
     font-weight: bold;
 }
 
-.profile-info {
-    flex: 1;
-}
-
 .profile-name {
     font-size: 32px;
-    color: #f5f5f5;
     margin-bottom: 8px;
-    font-weight: 600;
 }
 
 .profile-email {
-    font-size: 16px;
     color: #9d7aff;
     margin-bottom: 25px;
 }
@@ -510,16 +377,9 @@ nav a:hover {
     gap: 40px;
 }
 
-.stat {
-    text-align: center;
-}
-
 .stat-number {
-    display: block;
     font-size: 24px;
-    color: #f5f5f5;
     font-weight: 600;
-    margin-bottom: 4px;
 }
 
 .stat-label {
@@ -531,16 +391,13 @@ nav a:hover {
     display: flex;
     gap: 15px;
     margin-bottom: 40px;
-    flex-wrap: wrap;
 }
 
 .action-btn {
     padding: 12px 24px;
     border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
     border: none;
-    transition: all 0.2s ease;
+    cursor: pointer;
 }
 
 .action-btn.primary {
@@ -548,28 +405,16 @@ nav a:hover {
     color: white;
 }
 
-.action-btn.primary:hover {
-    background: #6a3fe0;
-}
-
 .action-btn.secondary {
     background: transparent;
-    color: #f5f5f5;
     border: 1px solid #2a2a2a;
+    color: #f5f5f5;
 }
 
-.action-btn.secondary:hover {
-    background: #2a2a2a;
-    border-color: #7c4dff;
-}
-
-/* Отзывы */
 .review-section {
     background: #1a1a1a;
     border-radius: 16px;
     padding: 30px;
-    border: 1px solid #2a2a2a;
-    margin: 30px 0;
 }
 
 .rating-categories {
@@ -582,98 +427,39 @@ nav a:hover {
 .rating-category {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     padding: 15px 0;
     border-bottom: 1px solid #2a2a2a;
 }
 
 .rating-label {
-    font-size: 14px;
-    color: #f5f5f5;
-    font-weight: 500;
-    min-width: 200px;
-    margin-top: 5px;
+    min-width: 180px;
 }
 
-.heart-rating-wrapper {
+.star-rating {
     display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.heart-checkbox input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.heart-label {
-    display: inline-block;
-    padding: 8px 12px;
-    border: 2px solid #2a2a2a;
-    border-radius: 8px;
-    background: #000000;
-    font-size: 18px;
-    min-width: 60px;
-    text-align: center;
+    gap: 8px;
+    font-size: 28px;
     cursor: pointer;
-    transition: all 0.2s ease;
 }
 
-.heart-label:hover {
-    border-color: #9d7aff;
-    background: #1a1a1a;
+.star {
+    color: #444;
 }
 
-.heart-checkbox input[type="radio"]:checked + .heart-label {
-    border-color: #ff4757;
-    background: #2a1a1a;
-    color: #ff4757;
-}
-
-.heart-text {
-    font-size: 16px;
-    letter-spacing: 2px;
+.star.active {
+    color: #FFD700;
 }
 
 .review-textarea {
     width: 100%;
     padding: 14px 18px;
+    background: #000;
     border: 1px solid #2a2a2a;
     border-radius: 8px;
-    font-size: 16px;
-    background-color: #000000;
     color: #f5f5f5;
     resize: vertical;
-    min-height: 100px;
-    transition: border-color 0.2s ease;
 }
-
-.review-textarea:focus {
-    border-color: #9d7aff;
-    outline: none;
-}
-
-.error-message, .success-message {
-    padding: 12px;
-    border-radius: 6px;
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 14px;
-}
-
-.error-message {
-    background-color: #d32f2f;
-    color: white;
-}
-
-.success-message {
-    background-color: #4caf50;
-    color: white;
-}
-
-/* Добавьте в конец файла style.css */
 
 .header-search {
     margin: 0 20px;
@@ -684,97 +470,15 @@ nav a:hover {
 .search-input {
     width: 100%;
     padding: 8px 15px;
+    background: #000;
     border: 1px solid #2a2a2a;
     border-radius: 20px;
-    background: #000000;
     color: #f5f5f5;
-    font-size: 14px;
-    transition: all 0.2s ease;
 }
 
 .search-input:focus {
-    outline: none;
     border-color: #7c4dff;
-    box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.2);
-}
-
-/* Стили для светлой темы */
-body.light-theme {
-    background-color: #f5f5f5;
-    color: #1a1a1a;
-}
-
-body.light-theme header {
-    background-color: #ffffff;
-    border-bottom-color: #e0e0e0;
-}
-
-body.light-theme .anime-card,
-body.light-theme .login-container,
-body.light-theme .profile-card,
-body.light-theme .review-section {
-    background-color: #ffffff;
-    border-color: #e0e0e0;
-}
-
-body.light-theme .anime-name,
-body.light-theme .profile-name,
-body.light-theme .section-title {
-    color: #1a1a1a;
-}
-
-/* Анимации */
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-.favorite-btn.active {
-    background-color: #ff4757;
-    border-color: #ff4757;
-    animation: pulse 0.5s ease;
-}
-
-/* Добавьте в конец style.css */
-
-/* Активная вкладка */
-nav a.active {
-    color: #7c4dff;
-    position: relative;
-}
-
-nav a.active::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: #7c4dff;
-    animation: slideIn 0.3s ease;
-}
-
-/* Анимация для карточек избранного */
-.favorite-card {
-    animation: fadeInUp 0.5s ease forwards;
-    opacity: 0;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Бейдж избранного */
-nav ul li {
-    position: relative;
+    outline: none;
 }
 
 .favorites-count-badge {
@@ -784,7 +488,6 @@ nav ul li {
     background: #ff4757;
     color: white;
     font-size: 11px;
-    font-weight: bold;
     min-width: 18px;
     height: 18px;
     border-radius: 9px;
@@ -792,46 +495,70 @@ nav ul li {
     align-items: center;
     justify-content: center;
     padding: 0 5px;
-    box-shadow: 0 2px 5px rgba(255, 71, 87, 0.3);
 }
 
-.favorites-count-badge:empty {
-    display: none;
-}
-
-/* Звездный рейтинг */
-.star-rating {
-    display: flex;
-    gap: 8px;
-    font-size: 28px;
+.remove-favorite-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.7);
+    border: 1px solid #ff4757;
+    color: #ff4757;
+    font-size: 20px;
     cursor: pointer;
+    opacity: 0;
 }
 
-.star {
-    color: #444;
-    transition: all 0.2s ease;
+.favorite-card:hover .remove-favorite-btn {
+    opacity: 1;
 }
 
-.star.active {
-    color: #FFD700;
-    text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+.remove-favorite-btn:hover {
+    background: #ff4757;
+    color: white;
 }
 
-.star:hover {
-    transform: scale(1.2);
+.empty-favorites {
+    text-align: center;
+    padding: 60px 20px;
+    background: #1a1a1a;
+    border-radius: 16px;
 }
 
-.rating-category {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 15px 0;
-    border-bottom: 1px solid #2a2a2a;
+.empty-state-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    animation: heartbeat 1.5s infinite;
 }
 
-.rating-label {
-    font-size: 15px;
-    color: #f5f5f5;
-    font-weight: 500;
-    min-width: 180px;
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.browse-anime-btn {
+    display: inline-block;
+    background: #7c4dff;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-top: 20px;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.no-search-results {
+    text-align: center;
+    padding: 50px;
+    color: #b3b3b3;
+    background: #1a1a1a;
+    border-radius: 12px;
+    margin-top: 20px;
 }

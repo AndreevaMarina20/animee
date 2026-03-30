@@ -4,7 +4,7 @@ from . import views
 urlpatterns = [
     path('', views.home, name='home'),
     path('categories/', views.categories, name='categories'),
-    path('favorites/', views.favorites_view, name='favorites'),  # Новая страница избранного
+    path('favorites/', views.favorites_view, name='favorites'),
     path('anime/<int:anime_id>/', views.anime_detail, name='anime_detail'),
     path('anime/<int:anime_id>/watch/<int:episode_id>/', views.watch_episode, name='watch_episode'),
     path('login/', views.login_view, name='login'),
@@ -12,7 +12,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('profile/', views.profile, name='profile'),
     
-    # API endpoints
     path('api/toggle-favorite/', views.toggle_favorite, name='toggle_favorite'),
     path('api/favorites-count/', views.get_favorites_count, name='favorites_count'),
 ]

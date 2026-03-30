@@ -68,19 +68,16 @@ def register_view(request):
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
         
-        # Проверка длины логина
         if len(username) < 3:
             messages.error(request, 'Логин должен содержать минимум 3 символа')
             return render(request, 'register.html')
         
-        # Проверка пароля
         if len(password1) < 8:
             messages.error(request, 'Пароль должен содержать минимум 8 символов')
             return render(request, 'register.html')
         
         if password1 == password2:
             try:
-                # Проверяем, существует ли пользователь
                 if User.objects.filter(username=username).exists():
                     messages.error(request, 'Пользователь с таким логином уже существует')
                     return render(request, 'register.html')
@@ -96,7 +93,6 @@ def register_view(request):
                 )
                 login(request, user)
                 
-                # Создаем профиль пользователя в модели Users
                 Users.objects.create(
                     name=username,
                     email=email,
@@ -150,7 +146,6 @@ def profile(request):
             account_creation_date=timezone.now().date()
         )
     
-    # Только количество избранного, без списка
     favorites_count = Favorite.objects.filter(id_user=user_profile).count()
     
     if request.method == 'POST':
@@ -183,7 +178,7 @@ def profile(request):
         'user': user,
         'user_profile': user_profile,
         'form': form,
-        'favorites_count': favorites_count,  # Только число, без списка аниме
+        'favorites_count': favorites_count,
     }
     return render(request, 'profile.html', context)
 
@@ -201,7 +196,6 @@ def favorites_view(request):
             account_creation_date=timezone.now().date()
         )
     
-    # Получаем все избранное пользователя для отдельной страницы
     favorites = Favorite.objects.filter(id_user=user_profile).select_related('id_anime').order_by('-created_at')
     
     context = {
@@ -223,18 +217,15 @@ def toggle_favorite(request):
         if not anime_id:
             return JsonResponse({'success': False, 'error': 'Не указан ID аниме'}, status=400)
         
-        # Получаем аниме
         try:
             anime = Anime.objects.get(id=anime_id)
         except Anime.DoesNotExist:
             logger.error(f"Anime with ID {anime_id} not found")
             return JsonResponse({'success': False, 'error': 'Аниме не найдено'}, status=404)
         
-        # Получаем профиль пользователя
         try:
             user_profile = Users.objects.get(name=request.user.username)
         except Users.DoesNotExist:
-            # Создаем профиль, если не существует
             logger.info(f"Creating user profile for {request.user.username}")
             user_profile = Users.objects.create(
                 name=request.user.username,
@@ -244,11 +235,9 @@ def toggle_favorite(request):
                 account_creation_date=timezone.now().date()
             )
         
-        # Проверяем, есть ли уже в избранном
         favorite = Favorite.objects.filter(id_user=user_profile, id_anime=anime).first()
         
         if favorite:
-            # Удаляем из избранного
             favorite.delete()
             logger.info(f"Removed from favorites: {anime.name}")
             return JsonResponse({
