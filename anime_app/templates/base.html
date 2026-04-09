@@ -11,6 +11,15 @@
 </head>
 <body>
     {% include 'header.html' %} 
+    
+    {% if messages %}
+        {% for message in messages %}
+            <div class="toast-notification toast-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
     <main>
         {% block content %}
         {% endblock %}

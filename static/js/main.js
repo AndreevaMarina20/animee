@@ -20,31 +20,52 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     
     window.updateFavoritesCount = function() {
+        const isAuth = document.querySelector('.login-btn')?.textContent === 'Выйти';
+        if (!isAuth) return;
+        
         fetch('/api/favorites-count/', { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-            .then(r => r.json())
-            .then(d => d.success && document.querySelectorAll('#headerFavoritesCount').forEach(el => {
-                el.textContent = d.count;
-                el.style.display = d.count === 0 ? 'none' : 'flex';
-            }));
+            .then(r => {
+                if (!r.ok) throw new Error('Network error');
+                return r.json();
+            })
+            .then(d => {
+                if (d.success) {
+                    document.querySelectorAll('#headerFavoritesCount').forEach(el => {
+                        el.textContent = d.count;
+                        el.style.display = d.count === 0 ? 'none' : 'flex';
+                    });
+                }
+            })
+            .catch(err => console.error('Error:', err));
     };
     
     window.toggleFavorite = function(id, btn) {
-        if (document.querySelector('.login-btn')?.textContent !== 'Выйти') {
+        const isAuth = document.querySelector('.login-btn')?.textContent === 'Выйти';
+        if (!isAuth) {
             window.showNotification('Войдите в аккаунт', 'error');
             setTimeout(() => window.location.href = '/login/', 1500);
             return;
         }
+        
         const token = window.getCSRFToken();
-        if (!token) return window.showNotification('Ошибка безопасности', 'error');
+        if (!token) {
+            window.showNotification('Ошибка безопасности', 'error');
+            return;
+        }
+        
         const orig = btn.innerHTML;
         btn.innerHTML = '...';
         btn.disabled = true;
+        
         fetch('/api/toggle-favorite/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'X-CSRFToken': token, 'X-Requested-With': 'XMLHttpRequest' },
             body: JSON.stringify({ anime_id: id })
         })
-        .then(r => r.json())
+        .then(r => {
+            if (!r.ok) throw new Error('Network error');
+            return r.json();
+        })
         .then(d => {
             if (d.success) {
                 if (d.action === 'added') {
@@ -61,22 +82,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 btn.innerHTML = orig;
             }
         })
-        .catch(() => {
+        .catch(err => {
+            console.error('Error:', err);
             window.showNotification('Ошибка подключения', 'error');
             btn.innerHTML = orig;
         })
         .finally(() => btn.disabled = false);
     };
     
-    document.getElementById('favoriteBtn') && (() => {
-        const btn = document.getElementById('favoriteBtn');
-        const id = document.querySelector('.anime-detail-container')?.dataset.animeId;
-        if (id) {
-            const newBtn = btn.cloneNode(true);
-            btn.parentNode.replaceChild(newBtn, btn);
-            newBtn.onclick = e => (e.preventDefault(), window.toggleFavorite(id, newBtn));
-        }
-    })();
+    const favoriteBtn = document.getElementById('favoriteBtn');
+    const animeContainer = document.querySelector('.anime-detail-container');
+    if (favoriteBtn && animeContainer) {
+        const animeId = animeContainer.dataset.animeId;
+        const newBtn = favoriteBtn.cloneNode(true);
+        favoriteBtn.parentNode.replaceChild(newBtn, favoriteBtn);
+        newBtn.onclick = function(e) {
+            e.preventDefault();
+            window.toggleFavorite(animeId, this);
+            return false;
+        };
+    }
     
     document.querySelectorAll('.star-rating').forEach(c => {
         const stars = c.querySelectorAll('.star');
@@ -86,64 +111,84 @@ document.addEventListener('DOMContentLoaded', function() {
         upd(5);
         stars.forEach(s => {
             s.onmouseenter = () => upd(parseInt(s.dataset.value));
-            s.onclick = () => (hidden.value = s.dataset.value, upd(parseInt(s.dataset.value)));
+            s.onclick = () => {
+                hidden.value = s.dataset.value;
+                upd(parseInt(s.dataset.value));
+            };
         });
         c.onmouseleave = () => upd(parseInt(hidden.value));
     });
     
-    const form = document.getElementById('reviewForm');
-    form && form.addEventListener('submit', async e => {
-        e.preventDefault();
-        const btn = form.querySelector('button[type="submit"]');
-        const orig = btn.textContent;
-        btn.textContent = 'Отправка...';
-        btn.disabled = true;
-        try {
-            const r = await fetch(window.location.href, {
-                method: 'POST',
-                body: new FormData(form),
-                headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': window.getCSRFToken() }
-            });
-            const d = await r.json();
-            if (d.success) {
-                window.showNotification(d.message, 'success');
-                form.reset();
-                document.querySelectorAll('.star-rating').forEach(c => {
-                    const h = document.getElementById(c.dataset.field);
-                    if (h) { h.value = '5'; c.querySelectorAll('.star').forEach(s => s.classList.add('active')); }
+    const reviewForm = document.getElementById('reviewForm');
+    if (reviewForm) {
+        reviewForm.addEventListener('submit', async e => {
+            e.preventDefault();
+            const btn = reviewForm.querySelector('button[type="submit"]');
+            const orig = btn.textContent;
+            btn.textContent = 'Отправка...';
+            btn.disabled = true;
+            try {
+                const r = await fetch(window.location.href, {
+                    method: 'POST',
+                    body: new FormData(reviewForm),
+                    headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': window.getCSRFToken() }
                 });
-            } else window.showNotification(d.error || 'Ошибка', 'error');
-        } catch { window.showNotification('Ошибка отправки', 'error'); }
-        finally { btn.textContent = orig; btn.disabled = false; }
-    });
-    
-    const search = document.querySelector('.search-input');
-    let timer;
-    search && search.addEventListener('input', e => {
-        clearTimeout(timer);
-        timer = setTimeout(() => {
-            const q = e.target.value.toLowerCase().trim();
-            const cards = document.querySelectorAll('.anime-card');
-            let has = false;
-            cards.forEach(c => {
-                const t = c.querySelector('.anime-name')?.textContent.toLowerCase() || '';
-                const o = c.querySelector('.anime-original')?.textContent.toLowerCase() || '';
-                if (t.includes(q) || o.includes(q) || !q) {
-                    c.style.display = 'flex';
-                    if (q) has = true;
-                } else c.style.display = 'none';
-            });
-            let msg = document.querySelector('.no-search-results');
-            if (q && !has && cards.length) {
-                if (!msg) {
-                    msg = document.createElement('div');
-                    msg.className = 'no-search-results';
-                    msg.innerHTML = '<p>Ничего не найдено</p>';
-                    document.querySelector('.anime-list')?.appendChild(msg);
+                const d = await r.json();
+                if (d.success) {
+                    window.showNotification(d.message, 'success');
+                    reviewForm.reset();
+                    document.querySelectorAll('.star-rating').forEach(c => {
+                        const h = document.getElementById(c.dataset.field);
+                        if (h) {
+                            h.value = '5';
+                            c.querySelectorAll('.star').forEach(s => s.classList.add('active'));
+                        }
+                    });
+                } else {
+                    window.showNotification(d.error || 'Ошибка', 'error');
                 }
-            } else msg?.remove();
-        }, 300);
-    });
+            } catch {
+                window.showNotification('Ошибка отправки', 'error');
+            } finally {
+                btn.textContent = orig;
+                btn.disabled = false;
+            }
+        });
+    }
+    
+    const searchInput = document.querySelector('.search-input');
+    let timer;
+    if (searchInput) {
+        searchInput.addEventListener('input', e => {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                const q = e.target.value.toLowerCase().trim();
+                const cards = document.querySelectorAll('.anime-card');
+                let has = false;
+                cards.forEach(c => {
+                    const title = c.querySelector('.anime-name')?.textContent.toLowerCase() || '';
+                    const original = c.querySelector('.anime-original')?.textContent.toLowerCase() || '';
+                    if (title.includes(q) || original.includes(q) || !q) {
+                        c.style.display = 'flex';
+                        if (q) has = true;
+                    } else {
+                        c.style.display = 'none';
+                    }
+                });
+                let msg = document.querySelector('.no-search-results');
+                if (q && !has && cards.length) {
+                    if (!msg) {
+                        msg = document.createElement('div');
+                        msg.className = 'no-search-results';
+                        msg.innerHTML = '<p>Ничего не найдено</p>';
+                        document.querySelector('.anime-list')?.appendChild(msg);
+                    }
+                } else if (msg) {
+                    msg.remove();
+                }
+            }, 300);
+        });
+    }
     
     document.querySelectorAll('.anime-card').forEach((c, i) => {
         c.style.opacity = '0';
@@ -160,20 +205,86 @@ document.addEventListener('DOMContentLoaded', function() {
 
 window.removeFromFavorites = function(id, btn) {
     if (!confirm('Удалить из избранного?')) return;
+    
     fetch('/api/toggle-favorite/', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': window.getCSRFToken(), 'X-Requested-With': 'XMLHttpRequest' },
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': window.getCSRFToken(),
+            'X-Requested-With': 'XMLHttpRequest'
+        },
         body: JSON.stringify({ anime_id: id })
     })
-    .then(r => r.json())
+    .then(r => {
+        if (!r.ok) throw new Error('Network error');
+        return r.json();
+    })
     .then(d => {
         if (d.success) {
             const card = btn.closest('.anime-card');
-            card && card.remove();
+            if (card) card.remove();
             window.showNotification(d.message, 'info');
             window.updateFavoritesCount();
-            !document.querySelectorAll('.anime-card').length && location.reload();
-        } else window.showNotification(d.error || 'Ошибка', 'error');
+            if (document.querySelectorAll('.anime-card').length === 0) {
+                location.reload();
+            }
+        } else {
+            window.showNotification(d.error || 'Ошибка', 'error');
+        }
     })
     .catch(() => window.showNotification('Ошибка подключения', 'error'));
 };
+
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    .favorite-btn.active {
+        background-color: #ff4757 !important;
+        border-color: #ff4757 !important;
+        color: white !important;
+    }
+    .star-rating {
+        display: flex;
+        gap: 8px;
+        font-size: 28px;
+        cursor: pointer;
+    }
+    .star {
+        color: #444;
+        transition: all 0.2s ease;
+    }
+    .star.active {
+        color: #FFD700 !important;
+        text-shadow: 0 0 15px rgba(255,215,0,0.5);
+    }
+    .star:hover {
+        transform: scale(1.2);
+    }
+    .no-search-results {
+        text-align: center;
+        padding: 50px;
+        color: #b3b3b3;
+        background: #1a1a1a;
+        border-radius: 12px;
+        margin-top: 20px;
+    }
+`;
+setTimeout(function() {
+    document.querySelectorAll('.toast-notification').forEach(function(el) {
+        el.style.opacity = '0';
+        setTimeout(function() { el.remove(); }, 300);
+    });
+}, 3000);
+document.head.appendChild(style);
+
+
+
+
+
+
+
+
+

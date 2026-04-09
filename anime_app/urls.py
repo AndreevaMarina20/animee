@@ -11,7 +11,6 @@ urlpatterns = [
     path('register/', views.register_view, name='register'),
     path('logout/', views.logout_view, name='logout'),
     path('profile/', views.profile, name='profile'),
-    
     path('api/toggle-favorite/', views.toggle_favorite, name='toggle_favorite'),
     path('api/favorites-count/', views.get_favorites_count, name='favorites_count'),
 ]

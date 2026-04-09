@@ -14,10 +14,6 @@
         <form class="registration-form" method="post">
             {% csrf_token %}
             
-            {% if error %}
-            <div class="error-message">{{ error }}</div>
-            {% endif %}
-            
             <div class="form-group">
                 <label class="form-label">Логин:</label>
                 <input type="text" class="form-input" placeholder="Ваш логин" name="username" required>
